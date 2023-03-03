@@ -1,5 +1,5 @@
 {
-    "Lua.runtime.version": "LuaJIT",
+    "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.special": [],
     "Lua.workspace.library": [
         "${3rd}/love2d/library"

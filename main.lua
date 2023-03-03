@@ -76,6 +76,11 @@ end
 --=========================================================================
 
 function love.load()
+    local state = require 'lib.gameState.splash'
+    state:set_final_action(function()
+        CHANGE_GAME_STATE(require 'lib.gameState.game')
+    end)
+
     CHANGE_GAME_STATE(require('lib.gameState.' .. initial_state), true)
 end
 
