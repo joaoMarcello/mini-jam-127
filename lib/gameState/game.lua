@@ -23,7 +23,7 @@ local player
 local sort_update = function(a, b) return a.update_order > b.update_order end
 local sort_draw = function(a, b) return a.draw_order < b.draw_order end
 
-local insert, remove, tableSort = table.insert, table.remove, table.sort
+local insert, remove, tableSort, mathRandom = table.insert, table.remove, table.sort, math.random
 
 function State:game_add_component(gc)
     insert(components, gc)
@@ -39,6 +39,34 @@ function State:game_remove_component(index)
     return remove(components, index)
 end
 
+function State:game_player()
+    return player
+end
+
+local time_fish = 0.0
+local time_fish_max = 0.8
+
+local function generate_fish(dt)
+    time_fish = time_fish + dt
+
+    if time_fish >= time_fish_max then
+        time_fish = 0
+
+        local dir = mathRandom() > 0.5 and 1 or -1
+
+        ---@type Fish
+        local fish = State:game_add_component(Fish:new(State, world, {
+            direction = dir,
+            acc = 32 * mathRandom(3, 6),
+            bottom = SCREEN_HEIGHT - 32 * 2.5
+        }))
+
+        fish.body:jump(32 * 7, -1)
+    end
+end
+
+--=============================================================================
+
 State:implements {
     load = function()
         Player:load()
@@ -46,6 +74,9 @@ State:implements {
     end,
 
     init = function()
+        time_fish = 0.0
+        time_fish_max = 0.8
+
         components = {}
         world = Phys:newWorld()
 
@@ -85,10 +116,19 @@ State:implements {
             State.camera:toggle_debug()
             State.camera:toggle_world_bounds()
         end
+
+        if key == 'r' then
+            CHANGE_GAME_STATE(State)
+            return
+        end
+
+        player:key_pressed(key)
     end,
 
     update = function(dt)
         --
+        generate_fish(dt)
+
         world:update(dt)
 
         tableSort(components, sort_update)

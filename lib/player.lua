@@ -1,9 +1,11 @@
 local GC = require 'lib.bodyComponent'
 
 local Utils = _G.JM_Utils
+local Phys = _G.JM_Love2D_Package.Physics
 
 ---@enum Player.States
 local States = {
+    default = 0,
     idle = 1,
     eat = 2,
     atk = 3,
@@ -107,13 +109,29 @@ function Player:__constructor__(state, world, args)
     self.key_down = { 'down' }
     self.key_up = 'w'
     self.key_jump = { 'space', 'up' }
-    self.key_attack = 'u'
+    self.key_attack = 'a'
     self.key_dash = { 'f' }
 
     self.ox = self.w / 2
     self.oy = self.h / 2
 
     self.body.max_speed_x = self.max_speed
+    self.body.allowed_air_dacc = true
+
+    self.state = States.default
+
+    self.atk_collider = Phys:newBody(world, self.body.x,
+        self.body.y - 32,
+        64, 64,
+        "ghost"
+    )
+
+    self.atk_collider.allowed_gravity = false
+
+    self.time_atk = 0.0
+    self.time_atk_delay = 0.4
+
+    self.direction = 1
 
     self.current_movement = move_default
 end
@@ -126,6 +144,53 @@ function Player:finish()
 
 end
 
+local filter_atk = function(obj, item)
+    return item.id == 'fish'
+end
+function Player:attack()
+    if self.time_atk ~= 0.0 then return false end
+
+    self.time_atk = self.time_atk_delay
+    local py = self.body.y - self.atk_collider.h + 16
+    if self.direction < 0 then
+        self.atk_collider:refresh(self.x + self.w / 2 - self.atk_collider.w, py)
+    else
+        self.atk_collider:refresh(self.x + self.w / 2, py)
+    end
+
+    local col = self.atk_collider:check(nil, nil, filter_atk)
+
+    if col.n > 0 then
+        ---@type Fish
+        local fish = col.items[1]:get_holder()
+        fish:hit()
+        -- a = nil * 3
+    end
+end
+
+function Player:jump()
+    local body = self.body
+    if body.speed_y == 0 then
+        body:jump(32 * 2.5, -1)
+    end
+end
+
+function Player:key_pressed(key)
+    local body = self.body
+
+    if pressed(self, 'jump', key) then
+        self:jump()
+    end
+
+    if pressed(self, 'attack', key) then
+        self:attack()
+    end
+end
+
+function Player:key_released(key)
+
+end
+
 function Player:update(dt)
     local body = self.body
 
@@ -133,12 +198,17 @@ function Player:update(dt)
 
     self.current_movement(self, dt)
 
+    self.time_atk = Utils:clamp(self.time_atk - dt, 0, 20)
+
     self.x, self.y = Utils:round(body.x), Utils:round(body.y)
 end
 
 function Player:my_draw()
     love.graphics.setColor(1, 0, 0)
     love.graphics.rectangle("fill", self.body:rect())
+
+    love.graphics.setColor(0, 0, 1)
+    love.graphics.rectangle("line", self.atk_collider:rect())
 end
 
 function Player:draw()
