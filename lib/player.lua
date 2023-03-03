@@ -1,4 +1,5 @@
 local GC = require 'lib.bodyComponent'
+local Fish = require 'lib.fish'
 
 local Utils = _G.JM_Utils
 local Phys = _G.JM_Love2D_Package.Physics
@@ -74,6 +75,17 @@ local function move_default(self, dt)
     if body.x ~= last_x then
         body.speed_x = 0
     end
+
+    self:change_preferred(dt)
+
+    self.time_atk = Utils:clamp(self.time_atk - dt, 0, 20)
+end
+
+---@param self Player
+local function move_dead(self, dt)
+    local body = self.body
+    self.body.speed_x = 0
+    self.body.acc_x = 0
 end
 --=========================================================================
 
@@ -91,7 +103,7 @@ function Player:new(state, world, args)
     args.y = args.bottom and (args.bottom - args.h) or args.y
 
     args.acc = 32 * 12
-    args.max_speed = 32 * 6
+    args.max_speed = 32 * 7
     args.dacc = 32 * 20
 
     local obj = GC:new(state, world, args)
@@ -118,7 +130,9 @@ function Player:__constructor__(state, world, args)
     self.body.max_speed_x = self.max_speed
     self.body.allowed_air_dacc = true
 
-    self.state = States.default
+    ---@type Player.States|any
+    self.state = nil --States.default
+    self:set_state(States.default)
 
     self.atk_collider = Phys:newBody(world, self.body.x,
         self.body.y - 32,
@@ -130,8 +144,15 @@ function Player:__constructor__(state, world, args)
 
     self.time_atk = 0.0
     self.time_atk_delay = 0.4
+    self.time_change = 0.0
+    self.time_change_speed = 3.0
+
+    self.hp = 6
+    self.hp_max = 6
 
     self.direction = 1
+
+    self.preferred = Fish.Types.green
 
     self.current_movement = move_default
 end
@@ -147,6 +168,7 @@ end
 local filter_atk = function(obj, item)
     return item.id == 'fish'
 end
+
 function Player:attack()
     if self.time_atk ~= 0.0 then return false end
 
@@ -158,11 +180,44 @@ function Player:attack()
     local col = self.atk_collider:check(nil, nil, filter_atk)
 
     if col.n > 0 then
-        ---@type Fish
-        local fish = col.items[1]:get_holder()
-        fish:hit()
-        -- a = nil * 3
+        for i = 1, col.n do
+            ---@type Fish
+            local fish = col.items[i]:get_holder()
+            fish:hit()
+        end
     end
+end
+
+function Player:set_state(state)
+    if state == self.state then return end
+    local last = self.state
+    self.state = state
+
+    if state == States.atk then
+    elseif state == States.default then
+    elseif state == States.dead then
+        local body = self.body
+        body.mass = self.world.default_mass * 0.6
+        body.speed_y = 0
+        body:jump(32 * 4)
+        body.type = 4
+        self.current_movement = move_dead
+    end
+end
+
+function Player:is_dead()
+    return self.state == States.dead or self.hp <= 0
+end
+
+function Player:damage()
+    if self:is_dead() then return false end
+
+    self.hp = Utils:clamp(self.hp - 1, 0, self.hp_max)
+
+    if self.hp == 0 then
+        self:set_state(States.dead)
+    end
+    self.gamestate:pause(0.2)
 end
 
 function Player:jump()
@@ -172,15 +227,32 @@ function Player:jump()
     end
 end
 
+function Player:change_preferred(dt)
+    self.time_change = self.time_change + dt
+
+    if self.time_change >= self.time_change_speed then
+        self.time_change = self.time_change - self.time_change_speed
+        self.time_change_speed = math.random(4, 7)
+
+        local last = self.preferred
+        self.preferred = math.random(1, 3)
+        if self.preferred == last then
+            self.preferred = Utils:clamp((last + 1) % 3, 1, 3)
+        end
+    end
+end
+
 function Player:key_pressed(key)
     local body = self.body
 
-    if pressed(self, 'jump', key) then
-        self:jump()
-    end
+    if self.state == States.default then
+        if pressed(self, 'jump', key) then
+            self:jump()
+        end
 
-    if pressed(self, 'attack', key) then
-        self:attack()
+        if pressed(self, 'attack', key) then
+            self:attack()
+        end
     end
 end
 
@@ -195,8 +267,6 @@ function Player:update(dt)
 
     self.current_movement(self, dt)
 
-    self.time_atk = Utils:clamp(self.time_atk - dt, 0, 20)
-
     self.x, self.y = Utils:round(body.x), Utils:round(body.y)
 end
 
@@ -210,6 +280,9 @@ end
 
 function Player:draw()
     GC.draw(self, self.my_draw)
+
+    local font = _G.JM_Font
+    font:print(self.hp, self.x, self.y - 20)
 end
 
 return Player

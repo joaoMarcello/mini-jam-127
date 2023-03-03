@@ -19,11 +19,13 @@ local world
 
 ---@type Player|any
 local player
+
+local score
 --=============================================================================
 local sort_update = function(a, b) return a.update_order > b.update_order end
 local sort_draw = function(a, b) return a.draw_order < b.draw_order end
 
-local insert, remove, tableSort, mathRandom = table.insert, table.remove, table.sort, math.random
+local insert, remove, tableSort, mathRandom, mathAbs = table.insert, table.remove, table.sort, math.random, math.abs
 
 function State:game_add_component(gc)
     insert(components, gc)
@@ -39,6 +41,10 @@ function State:game_remove_component(index)
     return remove(components, index)
 end
 
+function State:game_components()
+    return components
+end
+
 function State:game_player()
     return player
 end
@@ -47,6 +53,8 @@ local time_fish = 0.0
 local time_fish_max = 0.8
 
 local function generate_fish(dt)
+    if player:is_dead() then return end
+
     time_fish = time_fish + dt
 
     if time_fish >= time_fish_max then
@@ -54,16 +62,23 @@ local function generate_fish(dt)
 
         local dir = mathRandom() > 0.5 and 1 or -1
 
+        local prob = mathRandom()
+
         ---@type Fish
         local fish = State:game_add_component(Fish:new(State, world, {
             direction = dir,
             acc = 32 * mathRandom(3, 6),
-            -- mass = world.default_mass * (0.4 * mathRandom()),
-            bottom = SCREEN_HEIGHT - 32 * 2.5
+            bottom = SCREEN_HEIGHT - 32 * 2.5,
+            specie = prob <= 0.25 and player.preferred or mathRandom(1, 3)
         }))
 
         fish.body:jump(32 * 7, -1)
     end
+end
+
+function State:game_add_score(value)
+    value = mathAbs(value)
+    score = score + value
 end
 
 --=============================================================================
@@ -77,6 +92,7 @@ State:implements {
     init = function()
         time_fish = 0.0
         time_fish_max = 0.8
+        score = 0
 
         components = {}
         world = Phys:newWorld()
@@ -175,11 +191,15 @@ State:implements {
         --
         {
             name = "GUI",
+            lock_shake = true,
             --
             ---@param camera JM.Camera.Camera
             draw = function(self, camera)
                 local font = Pack.Font
                 font:print(#components, 32, 32)
+                font:print("<color, 1, 1, 1>SCORE: " .. score, 32, 64)
+                love.graphics.setColor(Fish.Colors[player.preferred])
+                love.graphics.rectangle("fill", SCREEN_WIDTH / 2 - 20, 32, 40, 40)
             end
         }
     } -- END Layers
