@@ -88,6 +88,11 @@ function Fish:__constructor__(state, world, args)
     self.type = args.specie or Types.red
 
     self.time = 0.0
+
+    if args.delay then
+        self.delay = args.delay
+        self.body.is_enabled = false
+    end
 end
 
 function Fish:load()
@@ -115,6 +120,17 @@ end
 
 function Fish:update(dt)
     GC.update(self, dt)
+
+    if self.delay then
+        self.delay = self.delay - dt
+        if self.delay <= 0 then
+            self.delay = nil
+            self.body.is_enabled = true
+        else
+            return
+        end
+    end
+
     local body = self.body
     local game = self.gamestate
 
@@ -135,7 +151,11 @@ function Fish:update(dt)
 
     if self:collision_player() and not self.hitted then
         local player = game:game_player()
-        if player.preferred == self.type then
+
+        if player:is_invencible() then
+            self:hit()
+            --
+        elseif player.preferred == self.type then
             game:game_add_score(100)
             self.__remove = true
         else

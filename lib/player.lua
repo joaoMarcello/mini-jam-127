@@ -79,6 +79,10 @@ local function move_default(self, dt)
     self:change_preferred(dt)
 
     self.time_atk = Utils:clamp(self.time_atk - dt, 0, 20)
+
+    if self.time_invicible ~= 0 then
+        self.time_invicible = Utils:clamp(self.time_invicible - dt, 0, self.invicible_duration)
+    end
 end
 
 ---@param self Player
@@ -148,6 +152,9 @@ function Player:__constructor__(state, world, args)
     self.time_change = 0.0
     self.time_change_speed = math.random(4, 7)
 
+    self.time_invicible = 0.0
+    self.invicible_duration = 0.8
+
     self.hp = 6
     self.hp_max = 6
 
@@ -211,17 +218,23 @@ function Player:is_dead()
     return self.state == States.dead or self.hp <= 0
 end
 
+function Player:is_invencible()
+    return self.time_invicible ~= 0
+end
+
 ---@param obj Fish|any
 function Player:damage(obj)
-    if self:is_dead() then return false end
+    if self:is_dead() or self.time_invicible ~= 0.0 then return false end
 
     self.hp = Utils:clamp(self.hp - 1, 0, self.hp_max)
+    self.time_invicible = self.invicible_duration
 
     if self.hp == 0 then
         self:set_state(States.dead)
     end
     self.hit_obj = obj
     self.gamestate:pause(0.2)
+    return true
 end
 
 function Player:jump()
@@ -236,7 +249,7 @@ function Player:change_preferred(dt)
 
     if self.time_change >= self.time_change_speed then
         self.time_change = self.time_change - self.time_change_speed
-        self.time_change_speed = math.random(4, 7)
+        self.time_change_speed = math.random(5, 8)
 
         local last = self.preferred
         self.preferred = math.random(1, 3)
@@ -270,6 +283,17 @@ function Player:update(dt)
     GC.update(self, dt)
 
     self.current_movement(self, dt)
+
+    if self.time_invicible ~= 0 and not self:is_dead() then
+        self:apply_effect('flickering', { speed = 0.06 })
+    else
+        local eff = self.eff_actives and self.eff_actives['flickering']
+        if eff then
+            eff.__remove = true
+            self.eff_actives['flickering'] = nil
+            self:set_visible(true)
+        end
+    end
 
     self.x, self.y = Utils:round(body.x), Utils:round(body.y)
 end

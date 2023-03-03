@@ -1,5 +1,6 @@
 local Pack = _G.JM_Love2D_Package
 local Phys = Pack.Physics
+local Utils = Pack.Utils
 
 local Player = require 'lib.player'
 local Fish = require 'lib.fish'
@@ -67,6 +68,23 @@ end
 local time_fish = 0.0
 local time_fish_speed = 0.8
 
+local function get_fish(delay)
+    local dir = mathRandom() > 0.5 and 1 or -1
+    local prob = mathRandom()
+
+    ---@type Fish
+    local fish = State:game_add_component(Fish:new(State, world, {
+        direction = dir,
+        acc = 32 * mathRandom(2, 6),
+        bottom = SCREEN_HEIGHT - 32 * 1.5,
+        specie = prob <= 0.33 and player.preferred or mathRandom(1, 3),
+        delay = delay
+    }))
+    fish.body:jump(32 * mathRandom(6, 7), -1)
+
+    return fish
+end
+
 local function generate_fish(dt)
     if player:is_dead() then return end
 
@@ -75,20 +93,16 @@ local function generate_fish(dt)
     if time_fish >= time_fish_speed then
         time_fish = time_fish - time_fish_speed
 
-        local dir = mathRandom() > 0.5 and 1 or -1
-
-        local prob = mathRandom()
-
-        ---@type Fish
-        local fish = State:game_add_component(Fish:new(State, world, {
-            direction = dir,
-            acc = 32 * mathRandom(2, 6),
-            bottom = SCREEN_HEIGHT - 32 * 1.5,
-            specie = prob <= 0.25 and player.preferred or mathRandom(1, 3)
-        }))
-
-        fish.body:jump(32 * 7, -1)
+        local fish = get_fish()
+        if time_fish_speed >= 1 or mathRandom() <= 0.33 then
+            get_fish(1 + mathRandom() * 2)
+        end
     end
+end
+
+local function time_fish_speed_decay(dt)
+    time_fish_speed = time_fish_speed - (5 / 90) * dt
+    time_fish_speed = Utils:clamp(time_fish_speed, 0.55, 1000)
 end
 
 function State:game_add_score(value)
@@ -108,8 +122,8 @@ State:implements {
     end,
 
     init = function()
-        time_fish = 0.0
-        time_fish_speed = 0.8
+        time_fish_speed = 5
+        time_fish = time_fish_speed - 1
         score = 0
 
         components = {}
@@ -132,7 +146,10 @@ State:implements {
         State:game_add_component(player)
 
         -- ---@type Fish
-        -- local fish = State:game_add_component(Fish:new(State, world, { bottom = SCREEN_HEIGHT - 32 * 2 }))
+        -- local fish = State:game_add_component(Fish:new(State, world, {
+        --     bottom = SCREEN_HEIGHT - 32 * 2,
+        --     delay = 2
+        -- }))
         -- fish.body:jump(32 * 8, -1)
 
         displayPref = DisplayPreferred:new(State)
@@ -170,6 +187,7 @@ State:implements {
     update = function(dt)
         --
         generate_fish(dt)
+        time_fish_speed_decay(dt)
 
         world:update(dt)
 
@@ -233,6 +251,8 @@ State:implements {
                 displayPref:draw()
                 displayAtk:draw()
                 displayHP:draw()
+
+                font:print(time_fish_speed, 32, 32 * 4)
             end
         }
     } -- END Layers
