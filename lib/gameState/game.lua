@@ -5,6 +5,7 @@ local Player = require 'lib.player'
 local Fish = require 'lib.fish'
 
 local DisplayPreferred = require 'lib.displayPreferred'
+local DisplayAtk = require 'lib.displayAtk'
 
 ---@class GameState.Game : GameState, JM.Scene
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -26,6 +27,9 @@ local player
 
 ---@type DisplayPreferred
 local displayPref
+
+---@type DisplayAtk
+local displayAtk
 
 local score
 --=============================================================================
@@ -95,6 +99,7 @@ State:implements {
         Player:load()
         Fish:load()
         DisplayPreferred:load()
+        DisplayAtk:load()
     end,
 
     init = function()
@@ -126,12 +131,14 @@ State:implements {
         -- fish.body:jump(32 * 8, -1)
 
         displayPref = DisplayPreferred:new(State)
+        displayAtk = DisplayAtk:new(State)
     end,
 
     finish = function()
         Player:finish()
         Fish:finish()
         DisplayPreferred:finish()
+        DisplayAtk:finish()
 
         components = nil
         world = nil
@@ -155,7 +162,7 @@ State:implements {
 
     update = function(dt)
         --
-        generate_fish(dt)
+        -- generate_fish(dt)
 
         world:update(dt)
 
@@ -174,6 +181,7 @@ State:implements {
         end
 
         displayPref:update(dt)
+        displayAtk:update(dt)
     end,
 
     layers = {
@@ -215,6 +223,7 @@ State:implements {
                 -- love.graphics.rectangle("fill", SCREEN_WIDTH / 2 - 20, 32, 40, 40)
 
                 displayPref:draw()
+                displayAtk:draw()
             end
         }
     } -- END Layers

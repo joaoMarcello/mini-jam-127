@@ -144,7 +144,7 @@ function Player:__constructor__(state, world, args)
     self.atk_collider.allowed_gravity = false
 
     self.time_atk = 0.0
-    self.time_atk_delay = 0.4
+    self.time_atk_delay = 0.8
     self.time_change = 0.0
     self.time_change_speed = math.random(4, 7)
 
