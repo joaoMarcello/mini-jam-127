@@ -2,6 +2,7 @@ local Pack = _G.JM_Love2D_Package
 local Phys = Pack.Physics
 
 local Player = require 'lib.player'
+local Fish = require 'lib.fish'
 
 ---@class GameState.Game : GameState, JM.Scene
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -21,7 +22,9 @@ local player
 --=============================================================================
 local sort_update = function(a, b) return a.update_order > b.update_order end
 local sort_draw = function(a, b) return a.draw_order < b.draw_order end
-local insert, remove = table.insert, table.remove
+
+local insert, remove, tableSort = table.insert, table.remove, table.sort
+
 function State:game_add_component(gc)
     insert(components, gc)
     return gc
@@ -39,17 +42,37 @@ end
 State:implements {
     load = function()
         Player:load()
+        Fish:load()
     end,
 
     init = function()
         components = {}
         world = Phys:newWorld()
+
+        local rects = {
+            { x = -32, y = SCREEN_HEIGHT - 32 * 2, w = SCREEN_WIDTH + 64, h = 32 * 2 },
+            --
+            -- { x = -1,               y = 0,                      w = 1,                 h = SCREEN_HEIGHT },
+            -- --
+            -- { x = SCREEN_WIDTH + 1, y = 0,                      w = 1,                 h = SCREEN_HEIGHT },
+        }
+
+        for i = 1, #rects do
+            local r = rects[i]
+            Phys:newBody(world, r.x, r.y, r.w, r.h, "static")
+        end
+
         player = Player:new(State, world, {})
         State:game_add_component(player)
+
+        ---@type Fish
+        local fish = State:game_add_component(Fish:new(State, world, { bottom = SCREEN_HEIGHT - 32 * 2 }))
+        fish.body:jump(32 * 8, -1)
     end,
 
     finish = function()
         Player:finish()
+        Fish:finish()
 
         components = nil
         world = nil
@@ -68,7 +91,7 @@ State:implements {
         --
         world:update(dt)
 
-        table.sort(components, sort_update)
+        tableSort(components, sort_update)
 
         for i = #components, 1, -1 do
             ---@type GameComponent
@@ -90,12 +113,32 @@ State:implements {
             --
             ---@param camera JM.Camera.Camera
             draw = function(self, camera)
-                table.sort(components, sort_draw)
+                --
+                for i = 1, world.bodies_number do
+                    ---@type JM.Physics.Body|JM.Physics.Slope
+                    local obj = world.bodies[i]
+
+                    if obj and camera:rect_is_on_view(obj:rect()) then
+                        local r = obj.type == 2 and obj.draw and
+                            obj:draw()
+                    end
+                end
+
+                tableSort(components, sort_draw)
                 for i = 1, #components do
                     local r = components[i].draw and components[i]:draw()
                 end
-
-                player:draw()
+            end
+        },
+        --
+        --
+        {
+            name = "GUI",
+            --
+            ---@param camera JM.Camera.Camera
+            draw = function(self, camera)
+                local font = Pack.Font
+                font:print(#components, 32, 32)
             end
         }
     } -- END Layers

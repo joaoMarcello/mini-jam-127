@@ -1,5 +1,6 @@
 local GC = require 'lib.bodyComponent'
 
+local Utils = _G.JM_Utils
 
 ---@enum Player.States
 local States = {
@@ -11,6 +12,7 @@ local States = {
 }
 --=========================================================================
 local keyboard_is_down = love.keyboard.isDown
+local math_abs = math.abs
 
 local function pressing(self, key)
     key = "key_" .. key
@@ -43,6 +45,34 @@ local function collision(x1, y1, w1, h1, x2, y2, w2, h2)
         and y1 + h1 > y2
         and y1 < y2 + h2
 end
+
+---@param self Player
+local function move_default(self, dt)
+    local body = self.body
+
+    if pressing(self, 'left') and body.speed_x <= 0.0 then
+        body:apply_force(-self.acc)
+        self.direction = -1
+        --
+    elseif pressing(self, "right") and body.speed_x >= 0.0 then
+        body:apply_force(self.acc)
+        self.direction = 1
+        --
+    elseif math_abs(body.speed_x) ~= 0.0 then
+        local dacc = self.dacc * ((pressing(self, 'left')
+            or pressing(self, 'right'))
+            and 1.5 or 1.0)
+
+        body.dacc_x = dacc
+    end
+
+    local last_x = body.x
+    body:refresh(Utils:clamp(body.x, 0, SCREEN_WIDTH - body.w))
+
+    if body.x ~= last_x then
+        body.speed_x = 0
+    end
+end
 --=========================================================================
 
 ---@class Player : BodyComponent
@@ -58,12 +88,17 @@ function Player:new(state, world, args)
     args.h = 64
     args.y = args.bottom and (args.bottom - args.h) or args.y
 
+    args.acc = 32 * 12
+    args.max_speed = 32 * 6
+    args.dacc = 32 * 20
+
     local obj = GC:new(state, world, args)
     setmetatable(obj, self)
     Player.__constructor__(obj, state, world, args)
     return obj
 end
 
+---@param state GameState.Game
 function Player:__constructor__(state, world, args)
     self.gamestate = state
 
@@ -74,6 +109,13 @@ function Player:__constructor__(state, world, args)
     self.key_jump = { 'space', 'up' }
     self.key_attack = 'u'
     self.key_dash = { 'f' }
+
+    self.ox = self.w / 2
+    self.oy = self.h / 2
+
+    self.body.max_speed_x = self.max_speed
+
+    self.current_movement = move_default
 end
 
 function Player:load()
@@ -85,8 +127,13 @@ function Player:finish()
 end
 
 function Player:update(dt)
+    local body = self.body
+
     GC.update(self, dt)
-    self.x, self.y = self.body.x, self.body.y
+
+    self.current_movement(self, dt)
+
+    self.x, self.y = Utils:round(body.x), Utils:round(body.y)
 end
 
 function Player:my_draw()
