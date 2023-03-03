@@ -84,14 +84,15 @@ end
 ---@param self Player
 local function move_dead(self, dt)
     local body = self.body
-    self.body.speed_x = 0
-    self.body.acc_x = 0
+    body.speed_x = 0
+    body.acc_x = 0
 end
 --=========================================================================
 
 ---@class Player : BodyComponent
 local Player = setmetatable({}, GC)
 Player.__index = Player
+Player.Fish = Fish
 
 function Player:new(state, world, args)
     args = args or {}
@@ -145,7 +146,7 @@ function Player:__constructor__(state, world, args)
     self.time_atk = 0.0
     self.time_atk_delay = 0.4
     self.time_change = 0.0
-    self.time_change_speed = 3.0
+    self.time_change_speed = math.random(4, 7)
 
     self.hp = 6
     self.hp_max = 6

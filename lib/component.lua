@@ -55,6 +55,24 @@ function GC:finish()
 
 end
 
+---@param eff_type JM.Effect.id_string
+---@param eff_args any
+---@return JM.Effect|any
+function GC:apply_effect(eff_type, eff_args, force)
+    if not self.eff_actives then self.eff_actives = {} end
+
+    if not force and self.eff_actives[eff_type] then
+        return nil
+    end
+
+    if self.eff_actives[eff_type] then
+        self.eff_actives[eff_type].__remove = true
+    end
+
+    self.eff_actives[eff_type] = Affectable.apply_effect(self, eff_type, eff_args)
+    return self.eff_actives[eff_type]
+end
+
 function GC:update(dt)
     Affectable.update(self, dt)
 end

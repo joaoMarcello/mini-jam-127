@@ -4,6 +4,8 @@ local Phys = Pack.Physics
 local Player = require 'lib.player'
 local Fish = require 'lib.fish'
 
+local DisplayPreferred = require 'lib.displayPreferred'
+
 ---@class GameState.Game : GameState, JM.Scene
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
 
@@ -11,6 +13,8 @@ State.camera:toggle_debug()
 State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
+
+State:set_color(0.8, 0.8, 0.8, 1)
 --=============================================================================
 local components
 
@@ -19,6 +23,9 @@ local world
 
 ---@type Player|any
 local player
+
+---@type DisplayPreferred
+local displayPref
 
 local score
 --=============================================================================
@@ -50,15 +57,15 @@ function State:game_player()
 end
 
 local time_fish = 0.0
-local time_fish_max = 0.8
+local time_fish_speed = 0.8
 
 local function generate_fish(dt)
     if player:is_dead() then return end
 
     time_fish = time_fish + dt
 
-    if time_fish >= time_fish_max then
-        time_fish = 0
+    if time_fish >= time_fish_speed then
+        time_fish = time_fish - time_fish_speed
 
         local dir = mathRandom() > 0.5 and 1 or -1
 
@@ -67,7 +74,7 @@ local function generate_fish(dt)
         ---@type Fish
         local fish = State:game_add_component(Fish:new(State, world, {
             direction = dir,
-            acc = 32 * mathRandom(3, 6),
+            acc = 32 * mathRandom(2, 6),
             bottom = SCREEN_HEIGHT - 32 * 2.5,
             specie = prob <= 0.25 and player.preferred or mathRandom(1, 3)
         }))
@@ -87,11 +94,12 @@ State:implements {
     load = function()
         Player:load()
         Fish:load()
+        DisplayPreferred:load()
     end,
 
     init = function()
         time_fish = 0.0
-        time_fish_max = 0.8
+        time_fish_speed = 0.8
         score = 0
 
         components = {}
@@ -110,17 +118,20 @@ State:implements {
             Phys:newBody(world, r.x, r.y, r.w, r.h, "static")
         end
 
-        player = Player:new(State, world, {})
+        player = Player:new(State, world, { bottom = SCREEN_HEIGHT - 32 * 2 })
         State:game_add_component(player)
 
-        ---@type Fish
-        local fish = State:game_add_component(Fish:new(State, world, { bottom = SCREEN_HEIGHT - 32 * 2 }))
-        fish.body:jump(32 * 8, -1)
+        -- ---@type Fish
+        -- local fish = State:game_add_component(Fish:new(State, world, { bottom = SCREEN_HEIGHT - 32 * 2 }))
+        -- fish.body:jump(32 * 8, -1)
+
+        displayPref = DisplayPreferred:new(State)
     end,
 
     finish = function()
         Player:finish()
         Fish:finish()
+        DisplayPreferred:finish()
 
         components = nil
         world = nil
@@ -161,6 +172,8 @@ State:implements {
                 State:game_remove_component(i)
             end
         end
+
+        displayPref:update(dt)
     end,
 
     layers = {
@@ -198,8 +211,10 @@ State:implements {
                 local font = Pack.Font
                 font:print(#components, 32, 32)
                 font:print("<color, 1, 1, 1>SCORE: " .. score, 32, 64)
-                love.graphics.setColor(Fish.Colors[player.preferred])
-                love.graphics.rectangle("fill", SCREEN_WIDTH / 2 - 20, 32, 40, 40)
+                -- love.graphics.setColor(Fish.Colors[player.preferred])
+                -- love.graphics.rectangle("fill", SCREEN_WIDTH / 2 - 20, 32, 40, 40)
+
+                displayPref:draw()
             end
         }
     } -- END Layers
