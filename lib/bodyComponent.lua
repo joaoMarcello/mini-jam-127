@@ -1,6 +1,6 @@
 local Phys = _G.JM_Love2D_Package.Physics
 local Affectable = _G.JM_Love2D_Package.Affectable
-local GC = require "scripts.component"
+local GC = require "lib.component"
 
 ---@class BodyComponent: JM.Template.Affectable, GameComponent
 local Component = JM_Utils:create_class(Affectable, GC)
@@ -8,6 +8,7 @@ local Component = JM_Utils:create_class(Affectable, GC)
 ---@param game GameState
 ---@param world JM.Physics.World
 ---@param args table
+---@return table
 function Component:new(game, world, args)
     local obj = GC:new(game, args)
 

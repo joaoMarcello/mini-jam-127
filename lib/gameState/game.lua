@@ -1,5 +1,8 @@
+local Pack = _G.JM_Love2D_Package
+local Phys = Pack.Physics
+
 ---@class GameState.Game : GameState, JM.Scene
-local State = _G.JM_Love2D_Package.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
+local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
 
 State.camera:toggle_debug()
 State.camera:toggle_grid()
@@ -7,6 +10,8 @@ State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
 --=============================================================================
 local components
+---@type JM.Physics.World|any
+local world
 --=============================================================================
 local sort_update = function(a, b) return a.update_order > b.update_order end
 local sort_draw = function(a, b) return a.draw_order < b.draw_order end
@@ -31,11 +36,13 @@ State:implements {
     end,
 
     init = function()
-
+        components = {}
+        world = Phys:newWorld()
     end,
 
     finish = function()
-
+        components = nil
+        world = nil
     end,
 
     keypressed = function(key)
@@ -65,12 +72,17 @@ State:implements {
     layers = {
         {
             name = 'main',
+            --
+            --
             ---@param camera JM.Camera.Camera
             draw = function(self, camera)
-
+                table.sort(components, sort_draw)
+                for i = 1, #components do
+                    local r = components[i].draw and components[i]:draw()
+                end
             end
         }
-    }
+    } -- END Layers
 }
 
 return State
