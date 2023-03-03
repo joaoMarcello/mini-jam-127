@@ -58,6 +58,7 @@ local function generate_fish(dt)
         local fish = State:game_add_component(Fish:new(State, world, {
             direction = dir,
             acc = 32 * mathRandom(3, 6),
+            -- mass = world.default_mass * (0.4 * mathRandom()),
             bottom = SCREEN_HEIGHT - 32 * 2.5
         }))
 

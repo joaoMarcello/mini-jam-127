@@ -23,10 +23,10 @@ function Fish:new(state, world, args)
     args.type = "ghost"
     args.direction = args.direction or 1
     local dir = args.direction
-    args.x = args.x or (dir > 0 and 0 or SCREEN_WIDTH)
     args.y = args.y or (32 * 2)
     args.w = 45
     args.h = 32
+    args.x = args.x or (dir > 0 and (-args.w) or SCREEN_WIDTH)
     args.y = args.bottom and (args.bottom - args.h) or args.y
 
     local obj = GC:new(state, world, args)

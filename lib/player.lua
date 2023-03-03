@@ -122,7 +122,7 @@ function Player:__constructor__(state, world, args)
 
     self.atk_collider = Phys:newBody(world, self.body.x,
         self.body.y - 32,
-        64, 64,
+        64 + 64, 64,
         "ghost"
     )
 
@@ -152,11 +152,8 @@ function Player:attack()
 
     self.time_atk = self.time_atk_delay
     local py = self.body.y - self.atk_collider.h + 16
-    if self.direction < 0 then
-        self.atk_collider:refresh(self.x + self.w / 2 - self.atk_collider.w, py)
-    else
-        self.atk_collider:refresh(self.x + self.w / 2, py)
-    end
+
+    self.atk_collider:refresh(self.x + self.w / 2 - self.atk_collider.w / 2, py)
 
     local col = self.atk_collider:check(nil, nil, filter_atk)
 
