@@ -47,6 +47,7 @@ end
 
 ---@class Player : BodyComponent
 local Player = setmetatable({}, GC)
+Player.__index = Player
 
 function Player:new(state, world, args)
     args = args or {}
@@ -60,6 +61,7 @@ function Player:new(state, world, args)
     local obj = GC:new(state, world, args)
     setmetatable(obj, self)
     Player.__constructor__(obj, state, world, args)
+    return obj
 end
 
 function Player:__constructor__(state, world, args)
