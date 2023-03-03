@@ -6,6 +6,7 @@ local Fish = require 'lib.fish'
 
 local DisplayPreferred = require 'lib.displayPreferred'
 local DisplayAtk = require 'lib.displayAtk'
+local DisplayHP = require 'lib.displayHP'
 
 ---@class GameState.Game : GameState, JM.Scene
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -30,6 +31,9 @@ local displayPref
 
 ---@type DisplayAtk
 local displayAtk
+
+---@type DisplayHP
+local displayHP
 
 local score
 --=============================================================================
@@ -79,7 +83,7 @@ local function generate_fish(dt)
         local fish = State:game_add_component(Fish:new(State, world, {
             direction = dir,
             acc = 32 * mathRandom(2, 6),
-            bottom = SCREEN_HEIGHT - 32 * 2.5,
+            bottom = SCREEN_HEIGHT - 32 * 1.5,
             specie = prob <= 0.25 and player.preferred or mathRandom(1, 3)
         }))
 
@@ -100,6 +104,7 @@ State:implements {
         Fish:load()
         DisplayPreferred:load()
         DisplayAtk:load()
+        DisplayHP:load()
     end,
 
     init = function()
@@ -111,7 +116,7 @@ State:implements {
         world = Phys:newWorld()
 
         local rects = {
-            { x = -32, y = SCREEN_HEIGHT - 32 * 2, w = SCREEN_WIDTH + 64, h = 32 * 2 },
+            { x = -32, y = SCREEN_HEIGHT - 32 * 1, w = SCREEN_WIDTH + 64, h = 32 * 2 },
             --
             -- { x = -1,               y = 0,                      w = 1,                 h = SCREEN_HEIGHT },
             -- --
@@ -132,6 +137,7 @@ State:implements {
 
         displayPref = DisplayPreferred:new(State)
         displayAtk = DisplayAtk:new(State)
+        displayHP = DisplayHP:new(State)
     end,
 
     finish = function()
@@ -139,6 +145,7 @@ State:implements {
         Fish:finish()
         DisplayPreferred:finish()
         DisplayAtk:finish()
+        DisplayHP:finish()
 
         components = nil
         world = nil
@@ -162,7 +169,7 @@ State:implements {
 
     update = function(dt)
         --
-        -- generate_fish(dt)
+        generate_fish(dt)
 
         world:update(dt)
 
@@ -182,6 +189,7 @@ State:implements {
 
         displayPref:update(dt)
         displayAtk:update(dt)
+        displayHP:update(dt)
     end,
 
     layers = {
@@ -224,6 +232,7 @@ State:implements {
 
                 displayPref:draw()
                 displayAtk:draw()
+                displayHP:draw()
             end
         }
     } -- END Layers

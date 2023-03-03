@@ -61,7 +61,10 @@ end
 function GC:apply_effect(eff_type, eff_args, force)
     if not self.eff_actives then self.eff_actives = {} end
 
-    if not force and self.eff_actives[eff_type] then
+    if not force
+        and self.eff_actives[eff_type]
+        and not self.eff_actives[eff_type].__remove
+    then
         return nil
     end
 
