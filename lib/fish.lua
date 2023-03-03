@@ -139,7 +139,7 @@ function Fish:update(dt)
             game:game_add_score(100)
             self.__remove = true
         else
-            player:damage()
+            player:damage(self)
             self.__remove = not player:is_dead()
             if player:is_dead() then
                 local components = game:game_components()

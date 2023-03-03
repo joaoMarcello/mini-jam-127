@@ -202,6 +202,7 @@ function Player:set_state(state)
         body.speed_y = 0
         body:jump(32 * 4)
         body.type = 4
+        self:set_draw_order(20)
         self.current_movement = move_dead
     end
 end
@@ -210,7 +211,8 @@ function Player:is_dead()
     return self.state == States.dead or self.hp <= 0
 end
 
-function Player:damage()
+---@param obj Fish|any
+function Player:damage(obj)
     if self:is_dead() then return false end
 
     self.hp = Utils:clamp(self.hp - 1, 0, self.hp_max)
@@ -218,6 +220,7 @@ function Player:damage()
     if self.hp == 0 then
         self:set_state(States.dead)
     end
+    self.hit_obj = obj
     self.gamestate:pause(0.2)
 end
 
@@ -277,6 +280,12 @@ function Player:my_draw()
 
     love.graphics.setColor(0, 0, 1)
     love.graphics.rectangle("line", self.atk_collider:rect())
+
+    if self.gamestate.time_pause and self.hit_obj and not self:is_dead() then
+        self.hit_obj:draw()
+    else
+        self.hit_obj = nil
+    end
 end
 
 function Player:draw()
