@@ -175,6 +175,7 @@ function Player:__constructor__(state, world, args)
     }
 
     self.cur_anima = self.animas[States.idle]
+    self.cur_anima:apply_effect('jelly', { speed = 0.6, range = 0.015 })
 end
 
 function Player:load()

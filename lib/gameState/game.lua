@@ -37,6 +37,8 @@ local displayAtk
 local displayHP
 
 local score
+
+local ground_py = SCREEN_HEIGHT - 32 * 2
 --=============================================================================
 local sort_update = function(a, b) return a.update_order > b.update_order end
 local sort_draw = function(a, b) return a.draw_order < b.draw_order end
@@ -76,7 +78,7 @@ local function get_fish(delay)
     local fish = State:game_add_component(Fish:new(State, world, {
         direction = dir,
         acc = 32 * mathRandom(2, 6),
-        bottom = SCREEN_HEIGHT - 32 * 1.5,
+        bottom = ground_py - 16,
         specie = prob <= 0.33 and player.preferred or mathRandom(1, 3),
         delay = delay
     }))
@@ -130,7 +132,7 @@ State:implements {
         world = Phys:newWorld()
 
         local rects = {
-            { x = -32, y = SCREEN_HEIGHT - 32 * 1, w = SCREEN_WIDTH + 64, h = 32 * 2 },
+            { x = -32, y = ground_py, w = SCREEN_WIDTH + 64, h = 32 * 2 },
             --
             -- { x = -1,               y = 0,                      w = 1,                 h = SCREEN_HEIGHT },
             -- --
