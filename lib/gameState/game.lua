@@ -17,7 +17,7 @@ State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
 
-State:set_color(0.8, 0.8, 0.8, 1)
+State:set_color(unpack(_G.Palette.purple))
 --=============================================================================
 local components
 
@@ -212,6 +212,14 @@ State:implements {
 
     layers = {
         {
+            lock_shake = true,
+            draw = function()
+                displayPref:draw()
+            end
+        },
+        --
+        --
+        {
             name = 'main',
             --
             --
@@ -243,12 +251,11 @@ State:implements {
             ---@param camera JM.Camera.Camera
             draw = function(self, camera)
                 local font = Pack.Font
-                font:print(#components, 32, 32)
-                font:print("<color, 1, 1, 1>SCORE: " .. score, 32, 64)
+                font:print(#components, 32, 32 * 4)
+                font:print("<color, 1, 1, 1>SCORE: " .. score, 32, 32 * 3)
                 -- love.graphics.setColor(Fish.Colors[player.preferred])
                 -- love.graphics.rectangle("fill", SCREEN_WIDTH / 2 - 20, 32, 40, 40)
 
-                displayPref:draw()
                 displayAtk:draw()
                 displayHP:draw()
 

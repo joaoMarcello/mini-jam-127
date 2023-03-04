@@ -24,6 +24,8 @@ function Display:__constructor__(state, args)
 
     self.ox = self.w / 2
     self.oy = self.h / 2
+
+    self.last_pref = state:game_player().preferred
 end
 
 function Display:load()
@@ -53,6 +55,11 @@ function Display:update(dt)
             self.eff_actives['pulse'] = nil
             eff.__remove = true
         end
+    end
+
+    if self.last_pref ~= player.preferred then
+        self.last_pref = player.preferred
+        self:apply_effect('popin', { speed = 0.2 })
     end
 end
 

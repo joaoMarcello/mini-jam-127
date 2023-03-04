@@ -233,7 +233,7 @@ function Player:damage(obj)
         self:set_state(States.dead)
     end
     self.hit_obj = obj
-    self.gamestate:pause(0.2)
+    self.gamestate:pause(self:is_dead() and 0.5 or 0.2)
     return true
 end
 

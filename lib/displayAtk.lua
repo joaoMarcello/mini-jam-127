@@ -1,5 +1,7 @@
 local GC = require 'lib.component'
 
+local color = _G.Palette.orange
+
 ---@class DisplayAtk : GameComponent
 local Display = setmetatable({}, GC)
 Display.__index = Display
@@ -7,9 +9,9 @@ Display.__index = Display
 function Display:new(state, args)
     args = args or {}
     args.x = 32
-    args.y = 32 + 3
+    args.y = 32 + 6
     args.w = 18 * 6 - 8
-    args.h = math.floor(32 / 6)
+    args.h = math.floor(32 / 6) - 1
 
     local obj = GC:new(state, args)
     setmetatable(obj, self)
@@ -44,15 +46,12 @@ function Display:update(dt)
 end
 
 function Display:my_draw()
-    love.graphics.setColor(0, 0, 0)
+    love.graphics.setColor(color)
     love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
 end
 
 function Display:draw()
     GC.draw(self, self.my_draw)
-
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
 
     -- local font = _G.JM_Font
     -- font:print(self.percent, self.x, self.y - 20)

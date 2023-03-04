@@ -1,4 +1,5 @@
 local GC = require 'lib.bodyComponent'
+local DisplayText = require 'lib.displayText'
 
 ---@enum Fish.Types
 local Types = {
@@ -96,11 +97,11 @@ function Fish:__constructor__(state, world, args)
 end
 
 function Fish:load()
-
+    DisplayText:load()
 end
 
 function Fish:finish()
-
+    DisplayText:finish()
 end
 
 function Fish:collision_player()
@@ -152,12 +153,18 @@ function Fish:update(dt)
     if self:collision_player() and not self.hitted then
         local player = game:game_player()
 
-        if player:is_invencible() then
+        if player.preferred == self.type then
+            game:game_add_score(100)
+            game:game_add_component(DisplayText:new(game, {
+                text = 100,
+                x = player.x + player.w / 2,
+                y = self.y
+            }))
+            self.__remove = true
+            --
+        elseif player:is_invencible() then
             self:hit()
             --
-        elseif player.preferred == self.type then
-            game:game_add_score(100)
-            self.__remove = true
         else
             player:damage(self)
             self.__remove = not player:is_dead()

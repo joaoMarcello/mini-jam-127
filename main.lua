@@ -3,6 +3,15 @@ love.filesystem.setIdentity("Hungry-Bob")
 
 Pack = require "jm-love2d-package.init"
 
+Palette = {
+    white = { 1, 1, 1 },
+    light_gray = { 239 / 255, 235 / 255, 234 / 255 },
+    dark_gray = { 228 / 255, 219 / 255, 214 / 255 },
+    orange = { 243 / 255, 180 / 255, 134 / 255 },
+    red = { 212 / 255, 113 / 255, 93 / 255 },
+    purple = { 77 / 255, 35 / 255, 74 / 255 },
+}
+
 math.randomseed(os.time())
 love.graphics.setBackgroundColor(0, 0, 0, 1)
 love.graphics.setDefaultFilter("nearest", "nearest")
