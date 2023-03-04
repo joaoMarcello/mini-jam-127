@@ -13,9 +13,9 @@ Types[3] = Types.blue
 
 ---@enum Fish.colors
 local Colors = {
-    [Types.red] = { 1, 0, 0 },
-    [Types.green] = { 0, 1, 0 },
-    [Types.blue] = { 0, 0, 1 },
+    [Types.red] = _G.Palette.red,
+    [Types.green] = _G.Palette.orange,
+    [Types.blue] = _G.Palette.light_gray,
 }
 
 ---@param self Fish
@@ -55,7 +55,7 @@ function Fish:new(state, world, args)
     local dir = args.direction
     args.y = args.y or (32 * 2)
     args.w = 45
-    args.h = 32
+    args.h = 40
     args.x = args.x or (dir > 0 and (-args.w) or SCREEN_WIDTH)
     args.y = args.bottom and (args.bottom - args.h) or args.y
 

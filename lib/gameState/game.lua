@@ -184,6 +184,10 @@ State:implements {
         player:key_pressed(key)
     end,
 
+    keyreleased = function(key)
+        player:key_released(key)
+    end,
+
     update = function(dt)
         --
         generate_fish(dt)
@@ -231,8 +235,12 @@ State:implements {
                     local obj = world.bodies[i]
 
                     if obj and camera:rect_is_on_view(obj:rect()) then
-                        local r = obj.type == 2 and obj.draw and
-                            obj:draw()
+                        -- local r = obj.type == 2 and obj.draw and
+                        --     obj:draw()
+                        if obj.type == 2 then
+                            love.graphics.setColor(Palette.orange)
+                            love.graphics.rectangle("fill", obj:rect())
+                        end
                     end
                 end
 

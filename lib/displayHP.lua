@@ -38,9 +38,9 @@ function Display:my_draw()
 
     for i = 1, player.hp_max do
         if i <= player.hp then
-            love.graphics.setColor(unpack(_G.Palette.red))
+            love.graphics.setColor(_G.Palette.red)
         else
-            love.graphics.setColor(unpack(_G.Palette.purple))
+            love.graphics.setColor(_G.Palette.purple)
         end
 
         local px = self.x + (i - 1) * 18

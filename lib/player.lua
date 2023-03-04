@@ -103,8 +103,8 @@ function Player:new(state, world, args)
     args.type = "dynamic"
     args.x = args.x or (32 * 5)
     args.y = args.y or (32 * 2)
-    args.w = 45
-    args.h = 64
+    args.w = 40
+    args.h = 60
     args.y = args.bottom and (args.bottom - args.h) or args.y
 
     args.acc = 32 * 12
@@ -141,14 +141,14 @@ function Player:__constructor__(state, world, args)
 
     self.atk_collider = Phys:newBody(world, self.body.x,
         self.body.y - 32,
-        64 + 64, 64,
+        64 + 64 + 16, 64 + 32,
         "ghost"
     )
 
     self.atk_collider.allowed_gravity = false
 
     self.time_atk = 0.0
-    self.time_atk_delay = 0.5
+    self.time_atk_delay = 0.38
     self.time_change = 0.0
     self.time_change_speed = math.random(4, 7)
 
@@ -180,8 +180,9 @@ end
 function Player:attack()
     if self.time_atk ~= 0.0 then return false end
 
+    local body = self.body
     self.time_atk = self.time_atk_delay
-    local py = self.body.y - self.atk_collider.h + 16
+    local py = body.y + body.h / 2 - self.atk_collider.h
 
     self.atk_collider:refresh(self.x + self.w / 2 - self.atk_collider.w / 2, py)
 
@@ -193,6 +194,8 @@ function Player:attack()
             local fish = col.items[i]:get_holder()
             fish:hit()
         end
+        self.gamestate:pause(0.1)
+        collectgarbage("step")
     end
 end
 
@@ -240,7 +243,7 @@ end
 function Player:jump()
     local body = self.body
     if body.speed_y == 0 then
-        body:jump(32 * 2.5, -1)
+        body:jump(32 * 3, -1)
     end
 end
 
@@ -274,7 +277,11 @@ function Player:key_pressed(key)
 end
 
 function Player:key_released(key)
-
+    if self.state == States.default then
+        if pressed(self, 'jump', key) and self.body.speed_y < 0 then
+            self.body.speed_y = self.body.speed_y * 0.5
+        end
+    end
 end
 
 function Player:update(dt)
@@ -303,7 +310,7 @@ function Player:my_draw()
     love.graphics.rectangle("fill", self.body:rect())
 
     love.graphics.setColor(0, 0, 1)
-    love.graphics.rectangle("line", self.atk_collider:rect())
+    -- love.graphics.rectangle("line", self.atk_collider:rect())
 
     if self.gamestate.time_pause and self.hit_obj and not self:is_dead() then
         self.hit_obj:draw()
