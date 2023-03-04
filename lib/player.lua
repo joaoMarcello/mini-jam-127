@@ -155,8 +155,8 @@ function Player:__constructor__(state, world, args)
     self.time_invicible = 0.0
     self.invicible_duration = 0.8
 
-    self.hp = 6
-    self.hp_max = 6
+    self.hp_max = 7
+    self.hp = self.hp_max
 
     self.direction = 1
 
@@ -236,7 +236,7 @@ function Player:damage(obj)
         self:set_state(States.dead)
     end
     self.hit_obj = obj
-    self.gamestate:pause(self:is_dead() and 0.5 or 0.2)
+    self.gamestate:pause(self:is_dead() and 0.8 or 0.2)
     return true
 end
 

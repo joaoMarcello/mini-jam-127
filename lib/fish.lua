@@ -10,6 +10,9 @@ local Types = {
 Types[1] = Types.red
 Types[2] = Types.green
 Types[3] = Types.blue
+Types.carpa = Types.red
+Types.atum = Types.blue
+Types.baiacu = Types.green
 
 ---@enum Fish.colors
 local Colors = {
@@ -17,6 +20,8 @@ local Colors = {
     [Types.green] = _G.Palette.orange,
     [Types.blue] = _G.Palette.light_gray,
 }
+
+local img
 
 ---@param self Fish
 local function speed_y_changed_dir(self)
@@ -47,6 +52,7 @@ local Fish = setmetatable({}, GC)
 Fish.__index = Fish
 Fish.Types = Types
 Fish.Colors = Colors
+Fish.Imgs = img
 
 function Fish:new(state, world, args)
     args = args or {}
@@ -94,14 +100,27 @@ function Fish:__constructor__(state, world, args)
         self.delay = args.delay
         self.body.is_enabled = false
     end
+
+    self.anima = _G.JM_Anima:new { img = img[self.type] }
+    self.anima:set_flip_x(self.direction > 0 and true or false)
 end
 
 function Fish:load()
     DisplayText:load()
+
+    img = img or {
+        [Types.red] = love.graphics.newImage('/data/image/carpa.png'),
+        [Types.blue] = love.graphics.newImage('/data/image/atum.png'),
+        [Types.green] = love.graphics.newImage('/data/image/baiacu.png'),
+    }
+
+    Fish.Imgs = img
 end
 
 function Fish:finish()
     DisplayText:finish()
+
+    img = nil
 end
 
 function Fish:collision_player()
@@ -131,6 +150,8 @@ function Fish:update(dt)
             return
         end
     end
+
+    self.anima:update(dt)
 
     local body = self.body
     local game = self.gamestate
@@ -193,8 +214,14 @@ function Fish:update(dt)
 end
 
 function Fish:my_draw()
-    love.graphics.setColor(Colors[self.type])
-    love.graphics.rectangle("fill", self.body:rect())
+    if self.delay and self.delay > 0 then
+        return
+    end
+
+    -- love.graphics.setColor(Colors[self.type])
+    -- love.graphics.rectangle("line", self.body:rect())
+
+    self.anima:draw(self.x + self.w / 2, self.y + self.h / 2)
 end
 
 function Fish:draw()

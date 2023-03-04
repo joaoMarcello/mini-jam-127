@@ -1,4 +1,5 @@
 local GC = require 'lib.component'
+local Fish = require 'lib.fish'
 
 ---@class DisplayPreferred : GameComponent
 local Display = setmetatable({}, GC)
@@ -26,14 +27,21 @@ function Display:__constructor__(state, args)
     self.oy = self.h / 2
 
     self.last_pref = state:game_player().preferred
+
+    local Anima = _G.JM_Anima
+    self.anima = {
+        [Fish.Types.baiacu] = Anima:new { img = Fish.Imgs[Fish.Types.baiacu] },
+        [Fish.Types.atum] = Anima:new { img = Fish.Imgs[Fish.Types.atum] },
+        [Fish.Types.carpa] = Anima:new { img = Fish.Imgs[Fish.Types.carpa] },
+    }
 end
 
 function Display:load()
-
+    Fish:load()
 end
 
 function Display:finish()
-
+    Fish:finish()
 end
 
 function Display:pulse()
@@ -68,8 +76,10 @@ function Display:my_draw()
     local color = player.Fish.Colors[player.preferred]
     love.graphics.setColor(color)
     love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
-    love.graphics.setColor(0, 0, 0)
+    love.graphics.setColor(1, 1, 1)
     love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+
+    self.anima[player.preferred]:draw(self.x + self.w / 2, self.y + self.h / 2)
 end
 
 function Display:draw()
