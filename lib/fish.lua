@@ -98,6 +98,7 @@ function Fish:__constructor__(state, world, args)
     self.oy = self.h / 2
 
     self:set_update_order(1)
+    self:set_draw_order(3)
 
     self.direction = args.direction or (-1)
 

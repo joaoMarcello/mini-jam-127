@@ -270,6 +270,20 @@ State:implements {
                 displayAtk:draw()
                 displayHP:draw()
 
+                if player:is_dead() then
+                    if player.time_death and player.time_death >= 1.5 then
+                        local dif = player.time_death - 2
+                        local purple = Palette.purple
+                        love.graphics.setColor(purple[1], purple[2], purple[3], dif / 1.3)
+                        love.graphics.rectangle("fill", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+
+                        font:push()
+                        font:set_font_size(32)
+                        font:printx("<effect=scream><color, 1, 1, 1>YOU ARE\nDEAD!!!", 0, 32 * 4, SCREEN_WIDTH, "center")
+                        font:pop()
+                    end
+                end
+
                 -- font:print(time_fish_speed, 32, 32 * 4)
             end
         }

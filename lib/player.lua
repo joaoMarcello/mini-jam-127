@@ -90,10 +90,21 @@ local function move_default(self, dt)
 end
 
 ---@param self Player
+local function move_atk(self, dt)
+    move_default(self, dt)
+    self.direction = self.last_dir or 1
+
+    if self.cur_anima:time_updating() >= 0.2 then
+        self:set_state(States.default)
+    end
+end
+
+---@param self Player
 local function move_dead(self, dt)
     local body = self.body
     body.speed_x = 0
     body.acc_x = 0
+    self.time_death = self.time_death + dt
 end
 --=========================================================================
 
@@ -139,9 +150,7 @@ function Player:__constructor__(state, world, args)
     self.body.max_speed_x = self.max_speed
     self.body.allowed_air_dacc = true
 
-    ---@type Player.States|any
-    self.state = nil --States.default
-    self:set_state(States.default)
+
 
     self.atk_collider = Phys:newBody(world, self.body.x,
         self.body.y - 32,
@@ -161,7 +170,7 @@ function Player:__constructor__(state, world, args)
     self.time_invicible = 0.0
     self.invicible_duration = 0.8
 
-    self.hp_max = 8
+    self.hp_max = 1
     self.hp = self.hp_max
 
     self.direction = 1
@@ -172,16 +181,24 @@ function Player:__constructor__(state, world, args)
 
     local Anima = _G.JM_Anima
     self.animas = {
-        [States.idle] = Anima:new { img = img[States.idle] }
+        [States.default] = Anima:new { img = img[States.default] },
+        [States.atk] = Anima:new { img = img[States.atk] },
+        [States.run] = Anima:new { img = img[States.run] },
     }
 
-    self.cur_anima = self.animas[States.idle]
+    self.cur_anima = self.animas[States.atk]
     self.cur_anima:apply_effect('jelly', { speed = 0.6, range = 0.015 })
+
+    ---@type Player.States|any
+    self.state = nil --States.default
+    self:set_state(States.default)
 end
 
 function Player:load()
     img = img or {
-        [States.idle] = love.graphics.newImage('/data/image/cat-idle.png'),
+        [States.default] = love.graphics.newImage('/data/image/cat-idle.png'),
+        [States.atk] = love.graphics.newImage('/data/image/cat-atk.png'),
+        [States.run] = love.graphics.newImage('/data/image/cat-run.png'),
     }
 
     Effect:load()
@@ -223,6 +240,8 @@ function Player:attack()
         self.gamestate:pause(0.1)
         collectgarbage("step")
     end
+
+    self:set_state(States.atk)
 end
 
 function Player:set_state(state)
@@ -231,20 +250,29 @@ function Player:set_state(state)
     self.state = state
 
     if state == States.atk then
+        self.current_movement = move_atk
+        self.last_dir = self.direction
+        self.animas[States.atk]:reset()
+        --
     elseif state == States.default then
+        self.current_movement = move_default
+        --
     elseif state == States.dead then
         local body = self.body
         body.mass = self.world.default_mass * 0.6
         body.speed_y = 0
         body:jump(32 * 4)
         body.type = 4
-        self:set_draw_order(20)
+        self.time_death = 0.0
+        -- self:set_draw_order(20)
         self.current_movement = move_dead
 
         self.gamestate.camera:shake_in_x(0.3, 2, nil, 0.1)
         self.gamestate.camera:shake_in_y(0.3, 5, nil, 0.15)
         self.gamestate.camera.shake_rad_y = math.pi
     end
+
+    self:select_anima()
 end
 
 function Player:is_dead()
@@ -266,7 +294,7 @@ function Player:damage(obj)
         self:set_state(States.dead)
     end
     self.hit_obj = obj
-    self.gamestate:pause(self:is_dead() and 0.8 or 0.2, function(dt)
+    self.gamestate:pause(self:is_dead() and 1.3 or 0.2, function(dt)
         self.gamestate.camera:update(dt)
     end)
     return true
@@ -316,6 +344,23 @@ function Player:key_released(key)
     end
 end
 
+function Player:select_anima()
+    local next
+    local Anima = _G.JM_Anima
+
+    if self.state == States.atk then
+        next = self.animas[States.atk]
+    else
+        if self.body.speed_x == 0 then
+            next = self.animas[States.default]
+        else
+            next = self.animas[States.run]
+        end
+    end
+
+    self.cur_anima = JM_Anima.change_animation(self.cur_anima, next)
+end
+
 function Player:update(dt)
     local body = self.body
 
@@ -334,6 +379,7 @@ function Player:update(dt)
         end
     end
 
+    self:select_anima()
     self.cur_anima:update(dt)
     self.cur_anima:set_flip_x(self.direction < 0 and true or false)
     self.x, self.y = Utils:round(body.x), Utils:round(body.y)
@@ -343,7 +389,7 @@ function Player:my_draw()
     love.graphics.setColor(1, 0, 0)
     love.graphics.rectangle("line", self.body:rect())
 
-    love.graphics.setColor(0, 0, 1)
+    -- love.graphics.setColor(0, 0, 1)
     -- love.graphics.rectangle("line", self.atk_collider:rect())
 
     self.cur_anima:draw_rec(self.x, self.y, self.w, self.h)
