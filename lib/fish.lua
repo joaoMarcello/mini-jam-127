@@ -132,7 +132,7 @@ end
 function Fish:hit()
     if not self.hitted then
         self.hitted = true
-        self:apply_effect("counterClockWise", { speed = 0.7 })
+        self:apply_effect("counterClockWise", { speed = 1 })
         self.body:jump(32 * 2.5)
         self.acc = self.acc * 2
     end

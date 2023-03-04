@@ -1,6 +1,8 @@
 local GC = require 'lib.component'
 local Fish = require 'lib.fish'
 
+local img
+
 ---@class DisplayPreferred : GameComponent
 local Display = setmetatable({}, GC)
 Display.__index = Display
@@ -34,14 +36,23 @@ function Display:__constructor__(state, args)
         [Fish.Types.atum] = Anima:new { img = Fish.Imgs[Fish.Types.atum] },
         [Fish.Types.carpa] = Anima:new { img = Fish.Imgs[Fish.Types.carpa] },
     }
+
+    self.mask = Anima:new { img = img.mask }
+    self.line = Anima:new { img = img.line }
 end
 
 function Display:load()
     Fish:load()
+
+    img = img or {
+        mask = love.graphics.newImage('/data/image/mask-display-pref-v2.png'),
+        line = love.graphics.newImage('/data/image/mask-display-pref.png'),
+    }
 end
 
 function Display:finish()
     Fish:finish()
+    img = nil
 end
 
 function Display:pulse()
@@ -74,12 +85,17 @@ end
 function Display:my_draw()
     local player = self.gamestate:game_player()
     local color = player.Fish.Colors[player.preferred]
-    love.graphics.setColor(color)
-    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+    -- love.graphics.setColor(color)
+    -- love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+    -- love.graphics.setColor(1, 1, 1)
+    -- love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
 
-    self.anima[player.preferred]:draw(self.x + self.w / 2, self.y + self.h / 2)
+    local px, py = self.x + self.w / 2, self.y + self.h / 2
+    self.mask:set_color(color)
+    self.mask:draw(px, py)
+    self.line:draw(px, py)
+
+    self.anima[player.preferred]:draw(px, py)
 end
 
 function Display:draw()

@@ -155,7 +155,7 @@ function Player:__constructor__(state, world, args)
     self.time_invicible = 0.0
     self.invicible_duration = 0.8
 
-    self.hp_max = 7
+    self.hp_max = 8
     self.hp = self.hp_max
 
     self.direction = 1
