@@ -1,5 +1,6 @@
 local GC = require 'lib.bodyComponent'
 local Fish = require 'lib.fish'
+local Effect = require 'lib.effects'
 
 local Utils = _G.JM_Utils
 local Phys = _G.JM_Love2D_Package.Physics
@@ -160,7 +161,7 @@ function Player:__constructor__(state, world, args)
     self.time_invicible = 0.0
     self.invicible_duration = 0.8
 
-    self.hp_max = 8
+    self.hp_max = 2
     self.hp = self.hp_max
 
     self.direction = 1
@@ -182,10 +183,13 @@ function Player:load()
     img = img or {
         [States.idle] = love.graphics.newImage('/data/image/cat-idle.png'),
     }
+
+    Effect:load()
 end
 
 function Player:finish()
     img = nil
+    Effect:finish()
 end
 
 local filter_atk = function(obj, item)
@@ -201,13 +205,20 @@ function Player:attack()
 
     self.atk_collider:refresh(self.x + self.w / 2 - self.atk_collider.w / 2, py)
 
-    local col = self.atk_collider:check(nil, nil, filter_atk)
-
+    local col  = self.atk_collider:check(nil, nil, filter_atk)
+    local game = self.gamestate
     if col.n > 0 then
         for i = 1, col.n do
             ---@type Fish
             local fish = col.items[i]:get_holder()
-            fish:hit()
+            local r = fish:hit()
+
+            if r then
+                game:game_add_component(Effect:new(game, {
+                    x = fish.x,
+                    y = fish.y + fish.h / 2
+                }))
+            end
         end
         self.gamestate:pause(0.1)
         collectgarbage("step")
@@ -229,6 +240,10 @@ function Player:set_state(state)
         body.type = 4
         self:set_draw_order(20)
         self.current_movement = move_dead
+
+        self.gamestate.camera:shake_in_x(0.3, 2, nil, 0.1)
+        self.gamestate.camera:shake_in_y(0.3, 5, nil, 0.15)
+        self.gamestate.camera.shake_rad_y = math.pi
     end
 end
 
@@ -251,7 +266,9 @@ function Player:damage(obj)
         self:set_state(States.dead)
     end
     self.hit_obj = obj
-    self.gamestate:pause(self:is_dead() and 0.8 or 0.2)
+    self.gamestate:pause(self:is_dead() and 0.8 or 0.2, function(dt)
+        self.gamestate.camera:update(dt)
+    end)
     return true
 end
 

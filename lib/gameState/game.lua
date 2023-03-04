@@ -132,7 +132,7 @@ State:implements {
         world = Phys:newWorld()
 
         local rects = {
-            { x = -32, y = ground_py, w = SCREEN_WIDTH + 64, h = 32 * 2 },
+            { x = -32, y = ground_py, w = SCREEN_WIDTH + 64, h = 32 * 3 },
             --
             -- { x = -1,               y = 0,                      w = 1,                 h = SCREEN_HEIGHT },
             -- --
@@ -260,9 +260,10 @@ State:implements {
             --
             ---@param camera JM.Camera.Camera
             draw = function(self, camera)
-                local font = Pack.Font
-                font:print(#components, 32, 32 * 4)
-                font:print("<color, 1, 1, 1>SCORE: " .. score, 32, 32 * 3)
+                local font = _G.FONT_GUI
+                -- font:print(#components, 32, 32 * 4)
+
+                font:print("SCORE: " .. score, 32, 32 * 3)
                 -- love.graphics.setColor(Fish.Colors[player.preferred])
                 -- love.graphics.rectangle("fill", SCREEN_WIDTH / 2 - 20, 32, 40, 40)
 

@@ -1,5 +1,6 @@
 local GC = require 'lib.bodyComponent'
 local DisplayText = require 'lib.displayText'
+local Effect = require 'lib.effects'
 
 ---@enum Fish.Types
 local Types = {
@@ -45,6 +46,12 @@ local function ground_touch(self)
         nw, nh
     )
     self:apply_effect(body:direction_x() > 0 and "clockWise" or "counterClockWise")
+
+    self.gamestate:game_add_component(Effect:new(self.gamestate, {
+        type = Effect.Types.splash,
+        x = self.x,
+        y = SCREEN_HEIGHT - 32 * 3
+    }))
 end
 
 ---@class Fish : BodyComponent
@@ -117,11 +124,13 @@ function Fish:load()
     }
 
     Fish.Imgs = img
+
+    Effect:load()
 end
 
 function Fish:finish()
     DisplayText:finish()
-
+    Effect:finish()
     img = nil
 end
 
@@ -137,6 +146,7 @@ function Fish:hit()
         self:apply_effect("counterClockWise", { speed = 1 })
         self.body:jump(32 * 2.5)
         self.acc = self.acc * 2
+        return true
     end
 end
 

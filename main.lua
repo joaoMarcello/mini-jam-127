@@ -88,6 +88,18 @@ end
 --=========================================================================
 
 function love.load()
+    FONT_GUI = Pack.FontGenerator:new_by_ttf({
+        path = "/data/font/Rajdhani-Bold.ttf",
+        path_bold = "data/font/Rajdhani-Bold.ttf",
+        dpi = 48,
+        name = "rajdhani",
+        font_size = 12,
+        character_space = 0,
+        min_filter = 'nearest',
+        max_filter = 'nearest'
+    })
+    FONT_GUI:set_color(Palette.purple)
+
     local state = require 'lib.gameState.splash'
     state:set_final_action(function()
         CHANGE_GAME_STATE(require 'lib.gameState.game')

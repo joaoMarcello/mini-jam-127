@@ -35,7 +35,7 @@ function Display:__constructor__(state, args)
 end
 
 function Display:load()
-    font = _G.JM_Font.current
+    font = _G.FONT_GUI
 end
 
 function Display:finish()
