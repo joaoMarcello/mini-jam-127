@@ -252,7 +252,7 @@ State:implements {
                 displayAtk:draw()
                 displayHP:draw()
 
-                font:print(time_fish_speed, 32, 32 * 4)
+                -- font:print(time_fish_speed, 32, 32 * 4)
             end
         }
     } -- END Layers
