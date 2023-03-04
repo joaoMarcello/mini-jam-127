@@ -13,7 +13,8 @@ local States = {
     atk = 3,
     dead = 4,
     run = 5,
-    damage = 6
+    damage = 6,
+    jump = 7
 }
 
 local img
@@ -184,6 +185,8 @@ function Player:__constructor__(state, world, args)
         [States.default] = Anima:new { img = img[States.default] },
         [States.atk] = Anima:new { img = img[States.atk] },
         [States.run] = Anima:new { img = img[States.run] },
+        [States.jump] = Anima:new { img = img[States.jump] },
+        [States.dead] = Anima:new { img = img[States.dead] },
     }
 
     self.cur_anima = self.animas[States.atk]
@@ -199,6 +202,8 @@ function Player:load()
         [States.default] = love.graphics.newImage('/data/image/cat-idle.png'),
         [States.atk] = love.graphics.newImage('/data/image/cat-atk.png'),
         [States.run] = love.graphics.newImage('/data/image/cat-run.png'),
+        [States.jump] = love.graphics.newImage('/data/image/cat-jump.png'),
+        [States.dead] = love.graphics.newImage('/data/image/cat-die.png'),
     }
 
     Effect:load()
@@ -348,10 +353,16 @@ function Player:select_anima()
     local next
     local Anima = _G.JM_Anima
 
-    if self.state == States.atk then
+    if self.state == States.dead then
+        next = self.animas[States.dead]
+        --
+    elseif self.state == States.atk then
         next = self.animas[States.atk]
+        --
     else
-        if self.body.speed_x == 0 then
+        if self.body.speed_y ~= 0 then
+            next = self.animas[States.jump]
+        elseif self.body.speed_x == 0 then
             next = self.animas[States.default]
         else
             next = self.animas[States.run]
