@@ -37,6 +37,10 @@ function Display:__constructor__(state, args)
         [Fish.Types.carpa] = Anima:new { img = Fish.Imgs[Fish.Types.carpa] },
     }
 
+    -- for _, anima in ipairs(self.anima) do
+    --     anima:apply_effect("pulse", { range = 0.05, speed = 1 })
+    -- end
+
     self.mask = Anima:new { img = img.mask }
     self.line = Anima:new { img = img.line }
 end
@@ -80,6 +84,8 @@ function Display:update(dt)
         self.last_pref = player.preferred
         self:apply_effect('popin', { speed = 0.2 })
     end
+
+    self.anima[player.preferred]:update(dt)
 end
 
 function Display:my_draw()

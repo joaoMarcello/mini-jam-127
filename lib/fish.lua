@@ -112,6 +112,7 @@ function Fish:__constructor__(state, world, args)
 
     self.anima = _G.JM_Anima:new { img = img[self.type] }
     self.anima:set_flip_x(self.direction > 0 and true or false)
+    self.anima:apply_effect('stretchVertical')
 end
 
 function Fish:load()
@@ -146,6 +147,13 @@ function Fish:hit()
         self:apply_effect("counterClockWise", { speed = 1 })
         self.body:jump(32 * 2.5)
         self.acc = self.acc * 2
+
+        local game = self.gamestate
+        game:game_add_component(Effect:new(game, {
+            x = self.x,
+            y = self.y + self.h / 2
+        }))
+
         return true
     end
 end
@@ -188,6 +196,7 @@ function Fish:update(dt)
 
         if player.preferred == self.type then
             game:game_add_score(100)
+
             game:game_add_component(DisplayText:new(game, {
                 text = 100,
                 x = player.x + player.w / 2,
