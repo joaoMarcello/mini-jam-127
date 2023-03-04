@@ -11,8 +11,11 @@ local States = {
     eat = 2,
     atk = 3,
     dead = 4,
-    run = 5
+    run = 5,
+    damage = 6
 }
+
+local img
 --=========================================================================
 local keyboard_is_down = love.keyboard.isDown
 local math_abs = math.abs
@@ -104,7 +107,7 @@ function Player:new(state, world, args)
     args.x = args.x or (32 * 5)
     args.y = args.y or (32 * 2)
     args.w = 40
-    args.h = 60
+    args.h = 58
     args.y = args.bottom and (args.bottom - args.h) or args.y
 
     args.acc = 32 * 12
@@ -145,6 +148,8 @@ function Player:__constructor__(state, world, args)
         "ghost"
     )
 
+    self:set_update_order(10)
+
     self.atk_collider.allowed_gravity = false
 
     self.time_atk = 0.0
@@ -163,14 +168,23 @@ function Player:__constructor__(state, world, args)
     self.preferred = Fish.Types.green
 
     self.current_movement = move_default
+
+    local Anima = _G.JM_Anima
+    self.animas = {
+        [States.idle] = Anima:new { img = img[States.idle] }
+    }
+
+    self.cur_anima = self.animas[States.idle]
 end
 
 function Player:load()
-
+    img = img or {
+        [States.idle] = love.graphics.newImage('/data/image/cat-idle.png'),
+    }
 end
 
 function Player:finish()
-
+    img = nil
 end
 
 local filter_atk = function(obj, item)
@@ -302,15 +316,19 @@ function Player:update(dt)
         end
     end
 
+    self.cur_anima:update(dt)
+    self.cur_anima:set_flip_x(self.direction < 0 and true or false)
     self.x, self.y = Utils:round(body.x), Utils:round(body.y)
 end
 
 function Player:my_draw()
     love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle("fill", self.body:rect())
+    love.graphics.rectangle("line", self.body:rect())
 
     love.graphics.setColor(0, 0, 1)
     -- love.graphics.rectangle("line", self.atk_collider:rect())
+
+    self.cur_anima:draw_rec(self.x, self.y, self.w, self.h)
 
     if self.gamestate.time_pause and self.hit_obj and not self:is_dead() then
         self.hit_obj:draw()
@@ -322,8 +340,8 @@ end
 function Player:draw()
     GC.draw(self, self.my_draw)
 
-    local font = _G.JM_Font
-    font:print(self.hp, self.x, self.y - 20)
+    -- local font = _G.JM_Font
+    -- font:print(self.hp, self.x, self.y - 20)
 end
 
 return Player

@@ -90,6 +90,8 @@ function Fish:__constructor__(state, world, args)
     self.ox = self.w / 2
     self.oy = self.h / 2
 
+    self:set_update_order(1)
+
     self.direction = args.direction or (-1)
 
     self.type = args.specie or Types.red
@@ -179,7 +181,7 @@ function Fish:update(dt)
             game:game_add_component(DisplayText:new(game, {
                 text = 100,
                 x = player.x + player.w / 2,
-                y = self.y
+                y = player.y - 32
             }))
             self.__remove = true
             --

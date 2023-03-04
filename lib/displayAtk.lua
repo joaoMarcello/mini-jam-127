@@ -1,6 +1,6 @@
 local GC = require 'lib.component'
 
-local color = _G.Palette.orange
+local color = _G.Palette.red
 
 ---@class DisplayAtk : GameComponent
 local Display = setmetatable({}, GC)

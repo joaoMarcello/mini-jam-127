@@ -17,7 +17,7 @@ State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
 
-State:set_color(unpack(_G.Palette.purple))
+State:set_color(unpack(_G.Palette.orange))
 --=============================================================================
 local components
 
@@ -238,7 +238,7 @@ State:implements {
                         -- local r = obj.type == 2 and obj.draw and
                         --     obj:draw()
                         if obj.type == 2 then
-                            love.graphics.setColor(Palette.orange)
+                            love.graphics.setColor(Palette.red)
                             love.graphics.rectangle("fill", obj:rect())
                         end
                     end
