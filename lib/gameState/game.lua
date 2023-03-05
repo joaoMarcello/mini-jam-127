@@ -36,7 +36,9 @@ local displayAtk
 ---@type DisplayHP
 local displayHP
 
-local score
+local score, hi_score, last_hi_score
+
+local already_saved
 
 local ground_py = SCREEN_HEIGHT - 32 * 2
 --=============================================================================
@@ -121,12 +123,25 @@ State:implements {
         DisplayPreferred:load()
         DisplayAtk:load()
         DisplayHP:load()
+
+        local success, result = pcall(function()
+            local info = love.filesystem.getInfo('save.lua')
+            if info then
+                return love.filesystem.load('save.lua')
+            end
+            return nil
+        end)
+
+        hi_score = (success and result and result()) or 200
     end,
 
     init = function()
         time_fish_speed = 5
         time_fish = time_fish_speed - 1
         score = 0
+        already_saved = false
+        last_hi_score = hi_score
+
 
         components = {}
         world = Phys:newWorld()
@@ -178,9 +193,15 @@ State:implements {
             State.camera:toggle_world_bounds()
         end
 
-        if key == 'r' then
-            CHANGE_GAME_STATE(State)
+        if key == 'p' then
+            RESTART(State)
             return
+        end
+
+        if player.time_death and player.time_death >= 4 then
+            if key == 'r' then
+                RESTART(State)
+            end
         end
 
         player:key_pressed(key)
@@ -208,6 +229,19 @@ State:implements {
 
             if gc.__remove then
                 State:game_remove_component(i)
+            end
+        end
+
+        if player:is_dead() then
+            if not already_saved and player.time_death >= 3.8 then
+                already_saved = true
+
+                if score > hi_score then
+                    hi_score = score
+                    local success, result = pcall(function()
+                        love.filesystem.write('save.lua', 'return ' .. score)
+                    end)
+                end
             end
         end
 
@@ -263,9 +297,11 @@ State:implements {
                 local font = _G.FONT_GUI
                 -- font:print(#components, 32, 32 * 4)
 
-                font:print("SCORE: " .. score, SCREEN_WIDTH - 96 - 32, 16)
-                -- love.graphics.setColor(Fish.Colors[player.preferred])
-                -- love.graphics.rectangle("fill", SCREEN_WIDTH / 2 - 20, 32, 40, 40)
+                font:push()
+                font:set_line_space(5)
+                font:print("HI-SCORE\n " .. hi_score, SCREEN_WIDTH - 96, 16)
+                font:print("SCORE\n " .. score, SCREEN_WIDTH - 32 * 6, 16)
+                font:pop()
 
                 displayAtk:draw()
                 displayHP:draw()
@@ -279,7 +315,28 @@ State:implements {
 
                         font:push()
                         font:set_font_size(32)
-                        font:printx("<effect=scream><color, 1, 1, 1>YOU ARE\nDEAD!!!", 0, 32 * 4, SCREEN_WIDTH, "center")
+                        font:printx("<effect=scream><color, 1, 1, 1>YOU ARE\nDEAD!!!", 0, 32 * 2, SCREEN_WIDTH, "center")
+                        font:pop()
+                    end
+
+                    if player.time_death and player.time_death >= 4 then
+                        font:push()
+                        font:set_font_size(12)
+                        local orange = string.format("<color, %.2f, %.2f, %.2f>", unpack(Palette.orange))
+
+                        local red = string.format("<color, %.2f, %.2f, %.2f>", unpack(Palette.red))
+
+                        local msg = score > last_hi_score and
+                            string.format("\n <effect=ghost, min=0.5, speed=0.7> %s It's a new Hi Score!", red) or
+                            ""
+
+                        font:printx(string.format("<color, 1, 1, 1>Your Score was %s %d %s", orange, score, msg), 0,
+                            32 * 6,
+                            SCREEN_WIDTH,
+                            "center")
+
+                        font:printx("<color, 1, 1, 1>To play again press R\n To quit press Esc", 0, 32 * 9, SCREEN_WIDTH,
+                            "center")
                         font:pop()
                     end
                 end

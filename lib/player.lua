@@ -233,14 +233,7 @@ function Player:attack()
         for i = 1, col.n do
             ---@type Fish
             local fish = col.items[i]:get_holder()
-            local r = fish:hit()
-
-            -- if r then
-            --     game:game_add_component(Effect:new(game, {
-            --         x = fish.x,
-            --         y = fish.y + fish.h / 2
-            --     }))
-            -- end
+            fish:hit()
         end
         self.gamestate:pause(0.1)
         collectgarbage("step")
@@ -249,6 +242,7 @@ function Player:attack()
     self:set_state(States.atk)
 end
 
+---@param state Player.States
 function Player:set_state(state)
     if state == self.state then return end
     local last = self.state
