@@ -77,7 +77,7 @@ function UNPAUSE(state)
     CHANGE_GAME_STATE(state.prev_state, true, true, false, false, true, true)
 end
 
-function PLAY_SFX(name, force)
+function PLAY_SFX(name, force, stop)
     Pack.Sound:play_sfx(name, force)
 end
 
@@ -100,6 +100,10 @@ function love.load()
         max_filter = 'nearest'
     })
     FONT_GUI:set_color(Palette.purple)
+
+    local Sound = Pack.Sound
+    Sound:add_sfx('/data/sfx/496192__luminousfridge__bash-hit-sfx.ogg', "hit")
+    Sound:add_sfx('/data/sfx/aarrnnoo__very-quick-splash-and-squishy-sound-cutted.ogg', "splash", 0.25)
 
     local state = require 'lib.gameState.splash'
     state:set_final_action(function()

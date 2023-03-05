@@ -44,6 +44,8 @@ local already_saved
 local ground_py = SCREEN_HEIGHT - 32 * 2
 
 local time_heart, time_game
+
+local tutor_atk, tutor_move = true, false
 --=============================================================================
 local sort_update = function(a, b) return a.update_order > b.update_order end
 local sort_draw = function(a, b) return a.draw_order < b.draw_order end
@@ -162,6 +164,7 @@ State:implements {
         last_hi_score = hi_score
         time_heart = -10
         time_game = 0
+        tutor_atk = true
 
         components = {}
         world = Phys:newWorld()
@@ -227,6 +230,15 @@ State:implements {
         end
 
         player:key_pressed(key)
+
+        if tutor_atk then
+            for i = 1, #player.key_attack do
+                if key == player.key_attack[i] then
+                    tutor_atk = false
+                    break
+                end
+            end
+        end
     end,
 
     keyreleased = function(key)
@@ -324,6 +336,15 @@ State:implements {
                 font:set_line_space(5)
                 font:print("HI-SCORE\n " .. hi_score, SCREEN_WIDTH - 96, 16)
                 font:print("SCORE\n " .. score, SCREEN_WIDTH - 32 * 6, 16)
+
+                if not player:is_dead() then
+                    if tutor_atk then
+                        font:print("Press E/Q/F\n to Attack", player.x - 16, player.y - 32 * 3)
+                    elseif tutor_move then
+                        font:print("Press WASD or \nArrow keys to move", player.x - 16, player.y - 32 * 3)
+                    end
+                end
+
                 font:pop()
 
                 displayAtk:draw()

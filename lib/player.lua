@@ -32,6 +32,7 @@ local function pressing(self, key)
     else
         return keyboard_is_down(field[1])
             or (field[2] and keyboard_is_down(field[2]))
+            or (field[3] and keyboard_is_down(field[3]))
     end
 end
 
@@ -43,7 +44,7 @@ local function pressed(self, key, key_pressed)
     if type(field) == "string" then
         return key_pressed == field
     else
-        return key_pressed == field[1] or key_pressed == field[2]
+        return key_pressed == field[1] or key_pressed == field[2] or key_pressed == field[3]
     end
 end
 
@@ -137,20 +138,18 @@ end
 function Player:__constructor__(state, world, args)
     self.gamestate = state
 
-    self.key_left = { 'left' }
-    self.key_right = { 'right' }
-    self.key_down = { 'down' }
-    self.key_up = 'w'
-    self.key_jump = { 'space', 'up' }
-    self.key_attack = 'a'
-    self.key_dash = { 'f' }
+    self.key_left = { 'left', 'a' }
+    self.key_right = { 'right', 'd' }
+    self.key_down = { 'down', 's' }
+    self.key_up = { 'w', 'up' }
+    self.key_jump = { 'space', 'up', 'w' }
+    self.key_attack = { 'e', 'q', 'f' }
 
     self.ox = self.w / 2
     self.oy = self.h / 2
 
     self.body.max_speed_x = self.max_speed
     self.body.allowed_air_dacc = true
-
 
 
     self.atk_collider = Phys:newBody(world, self.body.x,
@@ -237,6 +236,7 @@ function Player:attack()
         end
         self.gamestate:pause(0.1)
         collectgarbage("step")
+        _G.PLAY_SFX("hit")
     end
 
     self:set_state(States.atk)
