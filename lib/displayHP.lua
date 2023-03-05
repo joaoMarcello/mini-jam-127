@@ -27,7 +27,11 @@ function Display:__constructor__(state, args)
     self.hearts = {}
     for i = 1, hp_max do
         self.hearts[i] = _G.JM_Anima:new { img = img, frames = 2 }
+        -- self.hearts[i]:apply_effect('pulse')
     end
+
+    self.n_hearts = #self.hearts
+    self.actives = {}
 end
 
 function Display:load()
@@ -40,6 +44,24 @@ end
 
 function Display:update(dt)
     GC.update(self, dt)
+
+    -- for i = 1, self.n_hearts do
+    --     ---@type JM.Anima
+    --     local anima = self.hearts[i]
+    --     anima:update(dt)
+    -- end
+
+    -- local player = self.gamestate:game_player()
+    -- local i = player.hp
+    -- if not self.actives[i] then
+    --     ---@type JM.Anima
+    --     local anima = self.hearts[i]
+    --     self.actives[i] = anima:apply_effect('pulse')
+
+    --     if self.actives[i + 1] then self.actives[i + 1].__remove = true end
+    --     if self.actives[i - 1] then self.actives[i - 1].__remove = true end
+    --     if self.actives[i - 2] then self.actives[i - 2].__remove = true end
+    -- end
 end
 
 function Display:my_draw()
