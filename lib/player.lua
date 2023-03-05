@@ -317,7 +317,11 @@ function Player:change_preferred(dt)
 
     if self.time_change >= self.time_change_speed then
         self.time_change = self.time_change - self.time_change_speed
-        self.time_change_speed = math.random(5, 8)
+
+        local time_game = self.gamestate:game_get_time_game()
+
+        self.time_change_speed = time_game <= 100 and math.random(5, 8)
+            or math.random(4, 7)
 
         local last = self.preferred
         self.preferred = math.random(1, 3)
@@ -397,9 +401,6 @@ function Player:update(dt)
 end
 
 function Player:my_draw()
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle("line", self.body:rect())
-
     -- love.graphics.setColor(0, 0, 1)
     -- love.graphics.rectangle("line", self.atk_collider:rect())
 
@@ -410,6 +411,9 @@ function Player:my_draw()
     else
         self.hit_obj = nil
     end
+
+    love.graphics.setColor(1, 0, 0)
+    love.graphics.rectangle("line", self.body:rect())
 end
 
 function Player:draw()

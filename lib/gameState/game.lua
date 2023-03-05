@@ -43,7 +43,7 @@ local already_saved
 
 local ground_py = SCREEN_HEIGHT - 32 * 2
 
-local time_game
+local time_heart, time_game
 --=============================================================================
 local sort_update = function(a, b) return a.update_order > b.update_order end
 local sort_draw = function(a, b) return a.draw_order < b.draw_order end
@@ -118,14 +118,19 @@ function State:game_add_score(value)
 end
 
 local function generate_heart(dt)
-    time_game = time_game + dt
+    time_heart = time_heart + dt
     if not player:is_dead() then
-        if time_game >= 45 then
-            time_game = 0
+        if time_heart >= 30 then
+            time_heart = 0
             State:game_add_component(Heart:new(State, world))
         end
     end
 end
+
+function State:game_get_time_game()
+    return time_game
+end
+
 --=============================================================================
 
 State:implements {
@@ -155,7 +160,8 @@ State:implements {
         score = 0
         already_saved = false
         last_hi_score = hi_score
-        time_game = 0.0
+        time_heart = -10
+        time_game = 0
 
         components = {}
         world = Phys:newWorld()
@@ -229,10 +235,10 @@ State:implements {
 
     update = function(dt)
         --
+        time_game = time_game + dt
         generate_fish(dt)
         generate_heart(dt)
         time_fish_speed_decay(dt)
-
         world:update(dt)
 
         tableSort(components, sort_update)
