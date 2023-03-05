@@ -4,6 +4,7 @@ local Utils = Pack.Utils
 
 local Player = require 'lib.player'
 local Fish = require 'lib.fish'
+local Heart = require 'lib.heart'
 
 local DisplayPreferred = require 'lib.displayPreferred'
 local DisplayAtk = require 'lib.displayAtk'
@@ -41,6 +42,8 @@ local score, hi_score, last_hi_score
 local already_saved
 
 local ground_py = SCREEN_HEIGHT - 32 * 2
+
+local time_game
 --=============================================================================
 local sort_update = function(a, b) return a.update_order > b.update_order end
 local sort_draw = function(a, b) return a.draw_order < b.draw_order end
@@ -114,12 +117,23 @@ function State:game_add_score(value)
     score = score + value
 end
 
+local function generate_heart(dt)
+    time_game = time_game + dt
+    if not player:is_dead() then
+        if time_game >= 50 then
+            time_game = 0
+            State:game_add_component(Heart:new(State, world))
+        end
+    end
+end
 --=============================================================================
 
 State:implements {
     load = function()
         Player:load()
         Fish:load()
+        Heart:load()
+
         DisplayPreferred:load()
         DisplayAtk:load()
         DisplayHP:load()
@@ -141,7 +155,7 @@ State:implements {
         score = 0
         already_saved = false
         last_hi_score = hi_score
-
+        time_game = 0.0
 
         components = {}
         world = Phys:newWorld()
@@ -177,6 +191,8 @@ State:implements {
     finish = function()
         Player:finish()
         Fish:finish()
+        Heart:finish()
+
         DisplayPreferred:finish()
         DisplayAtk:finish()
         DisplayHP:finish()
@@ -214,6 +230,7 @@ State:implements {
     update = function(dt)
         --
         generate_fish(dt)
+        generate_heart(dt)
         time_fish_speed_decay(dt)
 
         world:update(dt)
@@ -310,8 +327,16 @@ State:implements {
                     if player.time_death and player.time_death >= 1.5 then
                         local dif = player.time_death - 2
                         local purple = Palette.purple
-                        love.graphics.setColor(purple[1], purple[2], purple[3], dif / 1.3)
-                        love.graphics.rectangle("fill", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+                        love.graphics.setColor(purple[1], purple[2], purple[3], 1) --dif / 1.3
+                        -- love.graphics.rectangle("fill", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+
+                        love.graphics.rectangle("fill", 0, 0, Utils:clamp(SCREEN_WIDTH * dif, 0, SCREEN_WIDTH),
+                            SCREEN_HEIGHT / 2)
+
+                        love.graphics.rectangle("fill", SCREEN_WIDTH - Utils:clamp(SCREEN_WIDTH * dif, 0, SCREEN_WIDTH),
+                            SCREEN_HEIGHT / 2,
+                            SCREEN_WIDTH,
+                            SCREEN_HEIGHT / 2)
 
                         font:push()
                         font:set_font_size(32)
