@@ -32,6 +32,8 @@ function Display:__constructor__(state, args)
     self.x = self.x - text_w / 2
     self.acumulator = 0
     self.time = 0
+
+    self:set_draw_order(15)
 end
 
 function Display:load()

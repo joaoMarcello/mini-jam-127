@@ -1,4 +1,5 @@
 local GC = require 'lib.bodyComponent'
+local DisplayText = require 'lib.displayText'
 
 ---@class Heart : BodyComponent
 local Heart = setmetatable({}, GC)
@@ -33,11 +34,11 @@ function Heart:__constructor__(state, world, args)
 end
 
 function Heart:load()
-
+    DisplayText:load()
 end
 
 function Heart:finish()
-
+    DisplayText:finish()
 end
 
 function Heart:update(dt)
@@ -70,8 +71,23 @@ function Heart:update(dt)
     end
 
     local player = self.gamestate:game_player()
-    if body:check_collision(player.body:rect()) then
-        player:increase_hp()
+    if not player:is_dead() and body:check_collision(player.body:rect()) then
+        local r = player:increase_hp()
+        if r then
+            self.gamestate:game_add_component(DisplayText:new(self.gamestate, {
+                text = "+1 HP",
+                y = player.y,
+                x = player.x + player.w / 2
+            }))
+        else
+            local game = self.gamestate
+            game:game_add_score(500)
+            game:game_add_component(DisplayText:new(game, {
+                text = "500",
+                y = player.y,
+                x = player.x + player.w / 2
+            }))
+        end
         self.__remove = true
     end
 end

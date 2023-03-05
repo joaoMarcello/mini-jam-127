@@ -243,7 +243,9 @@ function Player:attack()
 end
 
 function Player:increase_hp()
+    local last = self.hp
     self.hp = Utils:clamp(self.hp + 1, 0, self.hp_max)
+    return self.hp ~= last
 end
 
 ---@param state Player.States

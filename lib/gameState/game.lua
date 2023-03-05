@@ -120,7 +120,7 @@ end
 local function generate_heart(dt)
     time_game = time_game + dt
     if not player:is_dead() then
-        if time_game >= 50 then
+        if time_game >= 45 then
             time_game = 0
             State:game_add_component(Heart:new(State, world))
         end
