@@ -102,8 +102,8 @@ end
 function Heart:my_draw()
     self.icon:draw_rec(self.x, self.y, self.w, self.h)
 
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.rectangle('line', self.body:rect())
+    -- love.graphics.setColor(0, 0, 0)
+    -- love.graphics.rectangle('line', self.body:rect())
 
     -- local font = _G.JM_Font.current
     -- font:print(tostring(self.body.speed_y), self.x, self.y - 20)
