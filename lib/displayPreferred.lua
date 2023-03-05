@@ -43,6 +43,7 @@ function Display:__constructor__(state, args)
 
     self.mask = Anima:new { img = img.mask }
     self.line = Anima:new { img = img.line }
+    self.line:set_color(Palette.purple)
 end
 
 function Display:load()
@@ -93,8 +94,13 @@ function Display:my_draw()
     -- love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
 
     local px, py = self.x + self.w / 2, self.y + self.h / 2
+
+    self.mask:set_color(Palette.purple)
+    self.mask:draw(px + 1, py + 1)
+
     self.mask:set_color(color)
     self.mask:draw(px, py)
+
     self.line:draw(px, py)
 
     self.anima[player.preferred]:draw(px, py)

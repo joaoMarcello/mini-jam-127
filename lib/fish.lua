@@ -115,7 +115,7 @@ function Fish:__constructor__(state, world, args)
 
     self.anima = _G.JM_Anima:new { img = img[self.type] }
     self.anima:set_flip_x(self.direction > 0 and true or false)
-    self.anima:apply_effect('stretchVertical')
+    -- self.anima:apply_effect('stretchVertical')
 end
 
 function Fish:load()

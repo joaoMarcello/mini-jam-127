@@ -1,6 +1,10 @@
 local GC = require 'lib.bodyComponent'
 local DisplayText = require 'lib.displayText'
 
+local Anima = _G.JM_Anima
+
+local img
+
 ---@class Heart : BodyComponent
 local Heart = setmetatable({}, GC)
 Heart.__index = Heart
@@ -31,10 +35,13 @@ function Heart:__constructor__(state, world, args)
     self.duration = 10
 
     self.time_jump = 0
+
+    self.icon = Anima:new { img = img }
 end
 
 function Heart:load()
     DisplayText:load()
+    img = img or love.graphics.newImage('/data/image/heart-item.png')
 end
 
 function Heart:finish()
@@ -93,8 +100,10 @@ function Heart:update(dt)
 end
 
 function Heart:my_draw()
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle('fill', self.body:rect())
+    self.icon:draw_rec(self.x, self.y, self.w, self.h)
+
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle('line', self.body:rect())
 
     -- local font = _G.JM_Font.current
     -- font:print(tostring(self.body.speed_y), self.x, self.y - 20)

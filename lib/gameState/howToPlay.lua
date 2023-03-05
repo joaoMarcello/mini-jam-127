@@ -15,6 +15,9 @@ local imgs
 ---@type JM.Anima
 local box_anima
 
+---@type JM.Anima
+local logo_anima
+
 ---@type JM.Font.Font
 local font
 
@@ -24,7 +27,8 @@ local phrase
 State:implements {
     load = function()
         imgs = imgs or {
-            box = love.graphics.newImage('/data/image/box.png')
+            box = love.graphics.newImage('/data/image/box.png'),
+            logo = love.graphics.newImage('/data/image/logo.png'),
         }
 
         font = Pack.FontGenerator:new_by_ttf({
@@ -44,6 +48,10 @@ State:implements {
     init = function()
         box_anima = Anima:new { img = imgs.box }
         local red = string.format("<color, %.2f, %.2f, %.2f, %.2f>", unpack(Palette.red))
+
+        logo_anima = Anima:new { img = imgs.logo, min_filter = 'linear', max_filter = 'linear' }
+        -- logo_anima:set_scale(0.2, 0.2)
+        logo_anima:set_size(nil, 32 * 1.8)
 
         phrase = font:generate_phrase(
             string.format(
@@ -83,6 +91,8 @@ State:implements {
         font:printx("<bold> <effect=ghost, min=0.2, max=1.2, speed=1.5>Press Enter to play", 0, SCREEN_HEIGHT - 64,
             SCREEN_WIDTH,
             "center")
+
+        logo_anima:draw(SCREEN_WIDTH / 2, 32 * 1.5)
     end
 }
 

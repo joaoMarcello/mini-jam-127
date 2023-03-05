@@ -80,13 +80,14 @@ local time_fish_speed = 0.8
 local function get_fish(delay)
     local dir = mathRandom() > 0.5 and 1 or -1
     local prob = mathRandom()
+    local prob_r = time_game >= 30 and 0.33 or 0.75
 
     ---@type Fish
     local fish = State:game_add_component(Fish:new(State, world, {
         direction = dir,
         acc = 32 * mathRandom(2, 6),
         bottom = ground_py - 16,
-        specie = prob <= 0.33 and player.preferred or mathRandom(1, 3),
+        specie = prob <= prob_r and player.preferred or mathRandom(1, 3),
         delay = delay
     }))
     fish.body:jump(32 * mathRandom(6, 7), -1)
@@ -122,7 +123,7 @@ end
 local function generate_heart(dt)
     time_heart = time_heart + dt
     if not player:is_dead() then
-        if time_heart >= 30 then
+        if time_heart >= 3 then
             time_heart = 0
             State:game_add_component(Heart:new(State, world))
         end
