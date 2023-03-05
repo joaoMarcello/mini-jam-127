@@ -158,7 +158,7 @@ State:implements {
 
     init = function()
         time_fish_speed = 5
-        time_fish = time_fish_speed - 1
+        time_fish = time_fish_speed - 3
         score = 0
         already_saved = false
         last_hi_score = hi_score

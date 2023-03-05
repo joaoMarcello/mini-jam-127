@@ -164,11 +164,11 @@ function Player:__constructor__(state, world, args)
 
     self.time_atk = 0.0
     self.time_atk_delay = 0.38
-    self.time_change = 0.0
+    self.time_change = -2
     self.time_change_speed = math.random(4, 7)
 
     self.time_invicible = 0.0
-    self.invicible_duration = 0.8
+    self.invicible_duration = 1 --0.8
 
     self.hp_max = 7
     self.hp = self.hp_max

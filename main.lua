@@ -41,9 +41,9 @@ FONT_LEVEL = nil
 
 --==================================================================
 
-SCREEN_HEIGHT = Pack.Utils:round(768 / 2)            -- 32*15
-SCREEN_WIDTH = Pack.Utils:round(SCREEN_HEIGHT * 1.5) -- *1.5
-local initial_state = 'game'
+SCREEN_HEIGHT = Pack.Utils:round(384) -- 32*15
+SCREEN_WIDTH = Pack.Utils:round(576)  -- *1.5
+local initial_state = 'howToPlay'
 
 --==================================================================
 
@@ -96,18 +96,18 @@ function love.load()
         font_size = 12,
         character_space = 0,
         -- line_space = 5,
-        min_filter = 'nearest',
-        max_filter = 'nearest'
+        min_filter = 'linear',
+        max_filter = 'linear'
     })
     FONT_GUI:set_color(Palette.purple)
 
     local Sound = Pack.Sound
     Sound:add_sfx('/data/sfx/496192__luminousfridge__bash-hit-sfx.ogg', "hit")
-    Sound:add_sfx('/data/sfx/aarrnnoo__very-quick-splash-and-squishy-sound-cutted.ogg', "splash", 0.25)
+    -- Sound:add_sfx('/data/sfx/aarrnnoo__very-quick-splash-and-squishy-sound-cutted.ogg', "splash", 0.25)
 
     local state = require 'lib.gameState.splash'
     state:set_final_action(function()
-        CHANGE_GAME_STATE(require 'lib.gameState.game')
+        CHANGE_GAME_STATE(require 'lib.gameState.howToPlay')
     end)
 
     CHANGE_GAME_STATE(require('lib.gameState.' .. initial_state), true)

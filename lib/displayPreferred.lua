@@ -59,10 +59,6 @@ function Display:finish()
     img = nil
 end
 
-function Display:pulse()
-
-end
-
 function Display:update(dt)
     GC.update(self, dt)
 
