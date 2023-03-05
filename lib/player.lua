@@ -412,8 +412,8 @@ function Player:my_draw()
         self.hit_obj = nil
     end
 
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle("line", self.body:rect())
+    -- love.graphics.setColor(1, 0, 0)
+    -- love.graphics.rectangle("line", self.body:rect())
 end
 
 function Player:draw()

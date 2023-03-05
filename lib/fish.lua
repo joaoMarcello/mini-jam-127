@@ -143,7 +143,7 @@ function Fish:collision_player()
 end
 
 function Fish:hit()
-    if not self.hitted then
+    if not self.hitted and not self.delay then
         self.hitted = true
         self:apply_effect("counterClockWise", { speed = 1 })
         self.body:jump(32 * 2.5)
