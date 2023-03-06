@@ -170,12 +170,12 @@ function Player:__constructor__(state, world, args)
     self.time_invicible = 0.0
     self.invicible_duration = 1 --0.8
 
-    self.hp_max = 7
+    self.hp_max = 1
     self.hp = self.hp_max
 
     self.direction = 1
 
-    self.preferred = Fish.Types.green
+    self.preferred = math.random(1, 3)
 
     self.current_movement = move_default
 
@@ -229,17 +229,27 @@ function Player:attack()
     local col  = self.atk_collider:check(nil, nil, filter_atk)
     local game = self.gamestate
     if col.n > 0 then
+        local hit = false
         for i = 1, col.n do
             ---@type Fish
             local fish = col.items[i]:get_holder()
-            fish:hit()
+            local r = fish:hit()
+            if r and not hit then hit = true end
         end
-        self.gamestate:pause(0.1)
-        collectgarbage("step")
-        _G.PLAY_SFX("hit")
+
+        if hit then
+            self.gamestate:pause(0.1)
+            collectgarbage("step")
+            _G.PLAY_SFX("hit")
+        end
     end
 
     self:set_state(States.atk)
+    -- self:pulse()
+end
+
+function Player:pulse()
+    self:apply_effect('pulse', { duration = 0.6, speed = 0.3 }, true)
 end
 
 function Player:increase_hp()

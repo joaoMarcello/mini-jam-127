@@ -95,6 +95,7 @@ function Heart:update(dt)
                 x = player.x + player.w / 2
             }))
         end
+        player:pulse()
         self.__remove = true
     end
 end

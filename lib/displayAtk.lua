@@ -10,7 +10,7 @@ function Display:new(state, args)
     args = args or {}
     args.x = 32 - 8
     args.y = 32 + 6
-    args.w = 18 * 6 - 8
+    args.w = 18 * 7 - 8
     args.h = math.floor(32 / 6) - 1
 
     local obj = GC:new(state, args)

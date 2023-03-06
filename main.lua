@@ -43,7 +43,7 @@ FONT_LEVEL = nil
 
 SCREEN_HEIGHT = Pack.Utils:round(384) -- 32*15
 SCREEN_WIDTH = Pack.Utils:round(576)  -- *1.5
-local initial_state = 'splash'
+local initial_state = 'game'
 
 --==================================================================
 
