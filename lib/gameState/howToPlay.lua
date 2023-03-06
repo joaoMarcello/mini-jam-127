@@ -35,13 +35,14 @@ State:implements {
             path = "/data/font/Rajdhani-SemiBold.ttf",
             path_bold = "data/font/Rajdhani-Bold.ttf",
             dpi = 48,
-            name = "rajdhani",
+            name = "rajdhani-HowToPlay",
             font_size = 11,
             character_space = 0,
             line_space = 7,
             min_filter = 'linear',
             max_filter = 'linear'
         })
+
         font:set_color(Palette.purple)
     end,
 

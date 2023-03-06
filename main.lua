@@ -43,7 +43,7 @@ FONT_LEVEL = nil
 
 SCREEN_HEIGHT = Pack.Utils:round(384) -- 32*15
 SCREEN_WIDTH = Pack.Utils:round(576)  -- *1.5
-local initial_state = 'game'
+local initial_state = 'splash'
 
 --==================================================================
 
@@ -90,7 +90,7 @@ end
 function love.load()
     FONT_GUI = Pack.FontGenerator:new_by_ttf({
         path = "/data/font/Rajdhani-Bold.ttf",
-        path_bold = "data/font/Rajdhani-Bold.ttf",
+        -- path_bold = "data/font/Rajdhani-Bold.ttf",
         dpi = 48,
         name = "rajdhani",
         font_size = 12,
