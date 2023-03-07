@@ -322,6 +322,7 @@ function Player:jump()
     local body = self.body
     if body.speed_y == 0 then
         body:jump(32 * 3, -1)
+        _G.PLAY_SFX("jump", true)
     end
 end
 

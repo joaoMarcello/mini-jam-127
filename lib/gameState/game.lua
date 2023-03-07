@@ -196,6 +196,8 @@ State:implements {
         displayPref = DisplayPreferred:new(State)
         displayAtk = DisplayAtk:new(State)
         displayHP = DisplayHP:new(State)
+
+        _G.PLAY_SONG("game")
     end,
 
     finish = function()

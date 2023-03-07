@@ -3,6 +3,9 @@ local Fish = require 'lib.fish'
 
 local img
 
+---@type JM.Font.Font
+local font
+
 ---@class DisplayPreferred : GameComponent
 local Display = setmetatable({}, GC)
 Display.__index = Display
@@ -55,6 +58,8 @@ function Display:load()
         mask = love.graphics.newImage('/data/image/mask-display-pref-v2.png'),
         line = love.graphics.newImage('/data/image/mask-display-pref.png'),
     }
+
+    font = font or _G.FONT_GUI
 end
 
 function Display:finish()
@@ -87,6 +92,11 @@ function Display:update(dt)
         self.last_pref = player.preferred
         self:apply_effect('popin', { speed = 0.2 })
         self.played_ticktock = false
+        _G.PLAY_SFX("warning")
+        local audio = _G.Pack.Sound:get_sfx("tick-tock")
+        if audio then
+            audio.source:stop()
+        end
     end
 
     self.anima[player.preferred]:update(dt)
@@ -111,6 +121,11 @@ function Display:my_draw()
     self.line:draw(px, py)
 
     self.anima[player.preferred]:draw(px, py)
+
+    font:push()
+    font:set_font_size(10)
+    font:printx("CATCH", self.x, self.y - 10, self.x + self.w, "center")
+    font:pop()
 end
 
 function Display:draw()

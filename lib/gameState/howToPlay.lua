@@ -39,8 +39,8 @@ State:implements {
             font_size = 11,
             character_space = 0,
             line_space = 7,
-            min_filter = 'nearest',
-            max_filter = 'nearest'
+            min_filter = 'linear',
+            max_filter = 'linear'
         })
 
         font:set_color(Palette.purple)
@@ -56,7 +56,7 @@ State:implements {
 
         phrase = font:generate_phrase(
             string.format(
-                "<bold>Objective</bold no-space>:\n \tBob is hungry! Help him to feed catching the desired fish. But be careful: He is very demanding and his preferences change very quickly.\n \n<bold>Controls</bold no-space>:\n \t%sMove</color no-space>: WASD or Arrow keys.\n \t%sJump</color no-space>: W/Up/Space\n \t%sPunch</color no-space>: Q/E/F\n \n <bold>Tips</bold no-space>:\n \tCatch the heart to restore some HP.",
+                "<bold>Objective</bold no-space>:\n \tBob is hungry! Help him to feed catching the desired fish. But be careful: He is very demanding and his preferences change very quickly.\n \n<bold>Controls</bold no-space>:\n \t%sMove</color no-space>: WASD or Arrow keys.\n \t%sJump</color no-space>: W/Up/Space (hold for a higher jump)\n \t%sPunch</color no-space>: Q/E/F\n \n <bold>Tips</bold no-space>:\n \tCatch the heart to restore some HP.",
                 red, red, red),
             32, 32, SCREEN_WIDTH - 32, "left")
     end,
