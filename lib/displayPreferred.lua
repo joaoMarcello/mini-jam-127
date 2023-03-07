@@ -44,6 +44,8 @@ function Display:__constructor__(state, args)
     self.mask = Anima:new { img = img.mask }
     self.line = Anima:new { img = img.line }
     self.line:set_color(Palette.purple)
+
+    self.played_ticktock = false
 end
 
 function Display:load()
@@ -69,6 +71,10 @@ function Display:update(dt)
         and player.time_change >= (player.time_change_speed - 1.3)
     then
         self:apply_effect('pulse', { range = 0.07, speed = 0.3 })
+        if not self.played_ticktock then
+            PLAY_SFX('tick-tock', true)
+            self.played_ticktock = true
+        end
     else
         local eff = self.eff_actives and self.eff_actives['pulse']
         if eff then
@@ -80,6 +86,7 @@ function Display:update(dt)
     if self.last_pref ~= player.preferred then
         self.last_pref = player.preferred
         self:apply_effect('popin', { speed = 0.2 })
+        self.played_ticktock = false
     end
 
     self.anima[player.preferred]:update(dt)

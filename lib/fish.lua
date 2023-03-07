@@ -206,6 +206,7 @@ function Fish:update(dt)
                 y = player.y - 32
             }))
             self.__remove = true
+            _G.PLAY_SFX("eat", true)
             --
         elseif player:is_invencible() then
             self:hit()

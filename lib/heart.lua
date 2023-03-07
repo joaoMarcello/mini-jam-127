@@ -96,6 +96,7 @@ function Heart:update(dt)
             }))
         end
         player:pulse()
+        _G.PLAY_SFX("eat")
         self.__remove = true
     end
 end

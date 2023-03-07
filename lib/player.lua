@@ -164,7 +164,7 @@ function Player:__constructor__(state, world, args)
 
     self.time_atk = 0.0
     self.time_atk_delay = 0.38
-    self.time_change = -2
+    self.time_change = -3
     self.time_change_speed = math.random(4, 7)
 
     self.time_invicible = 0.0
@@ -244,8 +244,8 @@ function Player:attack()
         end
     end
 
+    _G.PLAY_SFX('slap')
     self:set_state(States.atk)
-    -- self:pulse()
 end
 
 function Player:pulse()
@@ -307,6 +307,9 @@ function Player:damage(obj)
 
     if self.hp == 0 then
         self:set_state(States.dead)
+        _G.PLAY_SFX("death")
+    else
+        _G.PLAY_SFX("scream")
     end
     self.hit_obj = obj
     self.gamestate:pause(self:is_dead() and 1.3 or 0.2, function(dt)

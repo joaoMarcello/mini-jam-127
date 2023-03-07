@@ -43,7 +43,7 @@ FONT_LEVEL = nil
 
 SCREEN_HEIGHT = Pack.Utils:round(384) -- 32*15
 SCREEN_WIDTH = Pack.Utils:round(576)  -- *1.5
-local initial_state = 'splash'
+local initial_state = 'game'
 
 --==================================================================
 
@@ -91,19 +91,23 @@ function love.load()
     FONT_GUI = Pack.FontGenerator:new_by_ttf({
         path = "/data/font/Rajdhani-Bold.ttf",
         -- path_bold = "data/font/Rajdhani-Bold.ttf",
-        dpi = 48,
+        dpi = 36,
         name = "rajdhani",
         font_size = 12,
         character_space = 0,
         -- line_space = 5,
-        min_filter = 'linear',
-        max_filter = 'linear'
+        min_filter = 'nearest',
+        max_filter = 'nearest'
     })
     FONT_GUI:set_color(Palette.purple)
 
     local Sound = Pack.Sound
     Sound:add_sfx('/data/sfx/496192__luminousfridge__bash-hit-sfx.ogg', "hit")
-    -- Sound:add_sfx('/data/sfx/aarrnnoo__very-quick-splash-and-squishy-sound-cutted.ogg', "splash", 0.25)
+    Sound:add_sfx('/data/sfx//foolboymedia__tick-tock (mp3cut.net).wav', "tick-tock")
+    Sound:add_sfx('/data/sfx/triqystudio__dropitem.wav', "slap", 0.5)
+    Sound:add_sfx('/data/sfx/megrez7274__snd_cathighmeows (mp3cut.net).wav', "scream", 0.6)
+    Sound:add_sfx('/data/sfx/lotrdinonerd__cat-meowing (mp3cut.net).wav', "death")
+    Sound:add_sfx('/data/sfx/marcjunker_man-eating-teriyaki-noodles  V-1.wav', "eat", 0.3)
 
     local state = require 'lib.gameState.splash'
     state:set_final_action(function()
