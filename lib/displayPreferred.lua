@@ -1,6 +1,8 @@
 local GC = require 'lib.component'
 local Fish = require 'lib.fish'
 
+local Sound = _G.JM_Love2D_Package.Sound
+
 local img
 
 ---@type JM.Font.Font
@@ -93,10 +95,15 @@ function Display:update(dt)
         self:apply_effect('popin', { speed = 0.2 })
         self.played_ticktock = false
         _G.PLAY_SFX("warning")
-        local audio = _G.Pack.Sound:get_sfx("tick-tock")
+        local audio = Sound:get_sfx("tick-tock")
         if audio then
             audio.source:stop()
         end
+    end
+
+    if player:is_dead() then
+        local audio = Sound:get_sfx("tick-tock")
+        if audio and audio.source:isPlaying() then audio.source:stop() end
     end
 
     self.anima[player.preferred]:update(dt)
