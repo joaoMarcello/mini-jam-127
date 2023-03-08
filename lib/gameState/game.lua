@@ -104,7 +104,8 @@ local function generate_fish(dt)
         time_fish = time_fish - time_fish_speed
 
         local fish = get_fish()
-        if time_fish_speed >= 1 or mathRandom() <= 0.33 then
+        local prob = time_game >= 140 and 0.7 or 0.33
+        if time_fish_speed >= 1 or mathRandom() <= prob then
             get_fish(1 + mathRandom() * 2)
         end
     end
