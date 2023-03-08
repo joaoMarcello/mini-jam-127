@@ -112,10 +112,6 @@ end
 function Display:my_draw()
     local player = self.gamestate:game_player()
     local color = player.Fish.Colors[player.preferred]
-    -- love.graphics.setColor(color)
-    -- love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
-    -- love.graphics.setColor(1, 1, 1)
-    -- love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
 
     local px, py = self.x + self.w / 2, self.y + self.h / 2
 

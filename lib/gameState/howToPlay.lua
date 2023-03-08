@@ -51,7 +51,7 @@ State:implements {
         local red = string.format("<color, %.2f, %.2f, %.2f, %.2f>", unpack(Palette.red))
 
         logo_anima = Anima:new { img = imgs.logo, min_filter = 'linear', max_filter = 'linear' }
-        -- logo_anima:set_scale(0.2, 0.2)
+
         logo_anima:set_size(nil, 32 * 1.8)
 
         phrase = font:generate_phrase(

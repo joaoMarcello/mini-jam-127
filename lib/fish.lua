@@ -53,7 +53,7 @@ local function ground_touch(self)
         y = SCREEN_HEIGHT - 32 * 3
     }))
 
-    -- _G.PLAY_SFX("splash", true, false)
+    _G.PLAY_SFX("splash", true)
 end
 
 ---@class Fish : BodyComponent

@@ -40,7 +40,7 @@ FONT_GUI = nil
 
 SCREEN_HEIGHT = Pack.Utils:round(384) -- 32*15
 SCREEN_WIDTH = Pack.Utils:round(576)  -- *1.5
-local initial_state = 'splash'
+local initial_state = 'game'
 
 --==================================================================
 
@@ -99,14 +99,18 @@ function love.load()
     FONT_GUI:set_color(Palette.purple)
 
     local Sound = Pack.Sound
+    Sound:add_sfx('/data/sfx/triqystudio__dropitem.ogg', "slap")
     Sound:add_sfx('/data/sfx/496192__luminousfridge__bash-hit-sfx.ogg', "hit")
-    Sound:add_sfx('/data/sfx/foolboymedia__tick-tock.wav', "tick-tock", 0.6)
-    Sound:add_sfx('/data/sfx/triqystudio__dropitem.ogg', "slap", 0.5)
-    Sound:add_sfx('/data/sfx/megrez7274__snd_cathighmeows (mp3cut.net).wav', "scream", 0.6)
-    Sound:add_sfx('/data/sfx/lotrdinonerd__cat-meowing (mp3cut.net).wav', "death")
-    Sound:add_sfx('/data/sfx/marcjunker_man-eating-teriyaki-noodles  V-1.wav', "eat", 0.3)
-    Sound:add_sfx('/data/sfx/original_sound__error-wooden.ogg', "warning", 0.6)
-    Sound:add_sfx('/data/sfx/filippys__pulo7.ogg', "jump", 0.4)
+
+    Sound:add_sfx('/data/sfx/foolboymedia__tick-tock.wav', "tick-tock", 0.9)
+    Sound:add_sfx('/data/sfx/original_sound__error-wooden.ogg', "warning", 1)
+
+    Sound:add_sfx('/data/sfx/megrez7274_snd_cathighmeows v2.wav', "scream", 1)
+    Sound:add_sfx('/data/sfx/lotrdinonerd_cat-meowing death v2.wav', "death")
+    Sound:add_sfx('/data/sfx/marcjunker_man-eating-teriyaki-noodles  V-1.wav', "eat", 0.8)
+    Sound:add_sfx('/data/sfx/filippys_pulo7 .ogg', "jump")
+
+    Sound:add_sfx('/data/sfx/aarrnnoo_very-quick-splash-and-squishy-sound-cutted-splash-v2.ogg', "splash", 0.2)
 
     -- Sound:add_song('/data/song/fun-kids-playful-comic-carefree-game-happy-positive-music-57026.ogg', "game", 0.1)
 
