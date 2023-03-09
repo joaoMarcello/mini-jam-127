@@ -54,7 +54,7 @@ local tile_map
 local map = function()
     local px, py = -32, SCREEN_HEIGHT - 32 * 2
 
-    for i = 0, 22 do
+    for i = 0, 24 do
         if i % 2 == 0 then
             Entry(px + 32 * i, py, 1)
             Entry(px + 32 * i, py + 32, 3)
