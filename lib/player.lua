@@ -176,6 +176,7 @@ function Player:__constructor__(state, world, args)
     self.direction = 1
 
     self.preferred = math.random(1, 3)
+    self.preferred = self.preferred == 2 and 3 or self.preferred
 
     self.current_movement = move_default
 
@@ -331,6 +332,8 @@ function Player:change_preferred(dt)
 
     if self.time_change >= self.time_change_speed then
         self.time_change = self.time_change - self.time_change_speed
+        self.time_change = self.time_change >= self.time_change_speed and 0
+            or self.time_change
 
         local time_game = self.gamestate:game_get_time_game()
 

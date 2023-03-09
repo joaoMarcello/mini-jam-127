@@ -34,13 +34,13 @@ State:implements {
         font = Pack.FontGenerator:new_by_ttf({
             path = "/data/font/Rajdhani-SemiBold.ttf",
             path_bold = "data/font/Rajdhani-Bold.ttf",
-            dpi = 64,
+            dpi = 36,
             name = "rajdhani-HowToPlay",
             font_size = 11,
             character_space = 0,
             line_space = 7,
-            min_filter = 'nearest',
-            max_filter = 'nearest'
+            min_filter = 'linear',
+            max_filter = 'linear'
         })
 
         font:set_color(Palette.purple)

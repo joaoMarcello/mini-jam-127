@@ -12,8 +12,8 @@ Types[1] = Types.red
 Types[2] = Types.green
 Types[3] = Types.blue
 Types.carpa = Types.red
-Types.atum = Types.blue
 Types.baiacu = Types.green
+Types.atum = Types.blue
 
 ---@enum Fish.colors
 local Colors = {
