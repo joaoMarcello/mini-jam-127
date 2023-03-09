@@ -102,6 +102,7 @@ local function generate_fish(dt)
 
     if time_fish >= time_fish_speed then
         time_fish = time_fish - time_fish_speed
+        if time_fish >= time_fish_speed then time_fish = 0 end
 
         local fish = get_fish()
         local prob = time_game >= 140 and 0.7 or 0.33
