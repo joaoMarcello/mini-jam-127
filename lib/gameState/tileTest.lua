@@ -1,4 +1,6 @@
 local Pack = _G.JM_Love2D_Package
+local TileMap = Pack.TileMap
+
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
     {
         top = -32 * 10,
@@ -12,10 +14,33 @@ State.camera:toggle_debug()
 State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
 --=============================================================================
+---@type JM.TileMap
+local tile_map
+
+---@type JM.TileMap
+local map2
+--=============================================================================
 
 State:implements {
     load = function()
+        tile_map = TileMap:new(
+            "/data/my_map_data.lua",
+            "/data/image/tileset_01.png",
+            32, nil
+        )
 
+        map2 = TileMap:new(
+            function()
+                Entry(0, 0, 1)
+                Entry(32, 0, 2)
+                Entry(64, 0, 1)
+                Entry(96, 0, 2)
+
+                Entry(0, 32, 3)
+            end,
+            "/data/image/tile-set-bob.png",
+            32
+        )
     end,
 
     init = function()
@@ -48,9 +73,21 @@ State:implements {
         end
     end,
 
-    -- draw = function()
+    draw = function(camera)
+        tile_map:draw(camera)
+        map2:draw(camera)
 
-    -- end
+        love.graphics.setColor(1, 0, 0, 1)
+
+        ---@type JM.TileMap.Cell
+        local cell = tile_map.cells_by_pos[tile_map.min_y] and tile_map.cells_by_pos[tile_map.min_y][tile_map.min_x]
+
+        if cell then
+            love.graphics.rectangle("fill", 32 * 20, 32 * 10, 32, 32)
+        end
+
+        love.graphics.rectangle("fill", 960, 320, 32, 32)
+    end
 }
 
 return State

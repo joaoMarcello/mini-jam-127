@@ -1,6 +1,7 @@
 local Pack = _G.JM_Love2D_Package
 local Phys = Pack.Physics
 local Utils = Pack.Utils
+local TileMap = Pack.TileMap
 
 local Player = require 'lib.player'
 local Fish = require 'lib.fish'
@@ -46,6 +47,25 @@ local ground_py = SCREEN_HEIGHT - 32 * 2
 local time_heart, time_game
 
 local tutor_atk, tutor_move = true, false
+
+---@type JM.TileMap
+local tile_map
+
+local map = function()
+    local px, py = -32, SCREEN_HEIGHT - 32 * 2
+
+    for i = 0, 22 do
+        if i % 2 == 0 then
+            Entry(px + 32 * i, py, 1)
+            Entry(px + 32 * i, py + 32, 3)
+            Entry(px + 32 * i, py + 64, 4)
+        else
+            Entry(px + 32 * i, py, 2)
+            Entry(px + 32 * i, py + 32, 4)
+            Entry(px + 32 * i, py + 64, 3)
+        end
+    end
+end
 --=============================================================================
 local sort_update = function(a, b) return a.update_order > b.update_order end
 local sort_draw = function(a, b) return a.draw_order < b.draw_order end
@@ -157,6 +177,8 @@ State:implements {
         end)
 
         hi_score = (success and result and result()) or 200
+
+        tile_map = TileMap:new(map, "/data/image/tile-set-bob.png", 32)
     end,
 
     init = function()
@@ -306,19 +328,21 @@ State:implements {
             ---@param camera JM.Camera.Camera
             draw = function(self, camera)
                 --
-                for i = 1, world.bodies_number do
-                    ---@type JM.Physics.Body|JM.Physics.Slope
-                    local obj = world.bodies[i]
+                -- for i = 1, world.bodies_number do
+                --     ---@type JM.Physics.Body|JM.Physics.Slope
+                --     local obj = world.bodies[i]
 
-                    if obj and camera:rect_is_on_view(obj:rect()) then
-                        -- local r = obj.type == 2 and obj.draw and
-                        --     obj:draw()
-                        if obj.type == 2 then
-                            love.graphics.setColor(Palette.red)
-                            love.graphics.rectangle("fill", obj:rect())
-                        end
-                    end
-                end
+                --     if obj and camera:rect_is_on_view(obj:rect()) then
+                --         -- local r = obj.type == 2 and obj.draw and
+                --         --     obj:draw()
+                --         if obj.type == 2 then
+                --             love.graphics.setColor(Palette.red)
+                --             love.graphics.rectangle("fill", obj:rect())
+                --         end
+                --     end
+                -- end
+
+                tile_map:draw(camera)
 
                 tableSort(components, sort_draw)
                 for i = 1, #components do
