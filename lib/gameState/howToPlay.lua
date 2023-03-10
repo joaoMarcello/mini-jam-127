@@ -42,6 +42,7 @@ State:implements {
             min_filter = 'linear',
             max_filter = 'linear'
         })
+        -- font:set_font_size(font.__ref_height)
 
         font:set_color(Palette.purple)
     end,

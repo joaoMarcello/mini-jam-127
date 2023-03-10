@@ -38,9 +38,9 @@ FONT_GUI = nil
 
 --==================================================================
 
-SCREEN_HEIGHT = Pack.Utils:round(384) -- 32*15
-SCREEN_WIDTH = Pack.Utils:round(576)  -- *1.5
-local initial_state = 'splash'
+SCREEN_HEIGHT = Pack.Utils:round(384) -- 384 32*15
+SCREEN_WIDTH = Pack.Utils:round(576)  --576 *1.5
+local initial_state = 'game'
 
 --==================================================================
 
@@ -161,11 +161,11 @@ end
 function love.draw()
     scene:draw()
 
-    love.graphics.setColor(0, 0, 0, 0.7)
-    love.graphics.rectangle("fill", 0, 0, 80, 120)
-    love.graphics.setColor(1, 1, 0, 1)
-    love.graphics.print(string.format("Memory:\n\t%.2f Mb", km), 5, 10)
-    love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 5, 50)
-    local maj, min, rev, code = love.getVersion()
-    love.graphics.print(string.format("Version:\n\t%d.%d.%d", maj, min, rev), 5, 75)
+    -- love.graphics.setColor(0, 0, 0, 0.7)
+    -- love.graphics.rectangle("fill", 0, 0, 80, 120)
+    -- love.graphics.setColor(1, 1, 0, 1)
+    -- love.graphics.print(string.format("Memory:\n\t%.2f Mb", km), 5, 10)
+    -- love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 5, 50)
+    -- local maj, min, rev, code = love.getVersion()
+    -- love.graphics.print(string.format("Version:\n\t%d.%d.%d", maj, min, rev), 5, 75)
 end
