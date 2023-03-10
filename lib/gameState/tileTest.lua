@@ -10,6 +10,8 @@ local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
     }
 )
 
+_G.Entry = "help me"
+
 State.camera:toggle_debug()
 State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
@@ -19,6 +21,9 @@ local tile_map
 
 ---@type JM.TileMap
 local map2
+
+---@type JM.TileMap
+local map3
 --=============================================================================
 
 State:implements {
@@ -39,6 +44,12 @@ State:implements {
                 Entry(0, 32, 3)
             end,
             "/data/image/tile-set-bob.png",
+            32
+        )
+
+        map3 = TileMap:new(
+            "/data/my_map_data.lua",
+            "/data/image/tileset_01.png",
             32
         )
     end,
@@ -87,6 +98,10 @@ State:implements {
         end
 
         love.graphics.rectangle("fill", 960, 320, 32, 32)
+
+        local font = FONT_GUI
+        font:print(tostring(tile_map.tile_set == map3.tile_set), 32 * 3, 32 * 8)
+        font:print(tostring(_G.Entry), 32 * 3, 32 * 3)
     end
 }
 
