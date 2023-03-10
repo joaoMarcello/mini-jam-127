@@ -52,7 +52,7 @@ local tutor_atk, tutor_move = true, false
 local tile_map
 
 local map = function()
-    local px, py = -32, SCREEN_HEIGHT - 32 * 2
+    local px, py = -32, _G.SCREEN_HEIGHT - 32 * 2
 
     for i = 0, 24 do
         if i % 2 == 0 then

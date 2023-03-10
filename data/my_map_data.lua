@@ -1,3 +1,5 @@
+Region = Region
+Entry = Entry
 if Region("desert") then
     Entry(640, 320, 8)
     Entry(672, 320, 7)

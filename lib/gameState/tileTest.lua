@@ -10,8 +10,6 @@ local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
     }
 )
 
-_G.Entry = "help me"
-
 State.camera:toggle_debug()
 State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
