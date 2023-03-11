@@ -2,11 +2,14 @@ local Pack = _G.JM_Love2D_Package
 
 ---@class GameState.Pause : GameState
 local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
-State:set_color(1, 1, 1, 0)
+State.camera:toggle_debug()
+State.camera:toggle_grid()
+State.camera:toggle_world_bounds()
+State.camera.border_color = { 0, 0, 0, 0 }
+--=============================================================================
 
 State:implements {
     load = function()
-        -- State.prev_state.subpixel = 1
         State.prev_state.canvas_scale = 1
         State.prev_state.offset_x = 0
     end,
@@ -50,6 +53,9 @@ State:implements {
 
             love.graphics.pop()
         end
+
+        love.graphics.setColor(0, 0, 0, 0.6)
+        love.graphics.rectangle("fill", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
     end
 }
 
