@@ -12,14 +12,23 @@ local DisplayAtk = require 'lib.displayAtk'
 local DisplayHP = require 'lib.displayHP'
 
 ---@class GameState.Game : GameState, JM.Scene
-local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
+local State = Pack.Scene:new(0, 0, 1366, 768, SCREEN_WIDTH, SCREEN_HEIGHT)
 
 State.camera:toggle_debug()
 State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
-State.camera.border_color = { 0, 0, 0, 0 }
+-- State.camera.border_color = { 0, 0, 0, 0 }
+-- State.camera.x = 32
+State:set_color(unpack(_G.Palette.orange)) --unpack(_G.Palette.orange)
 
-State:set_color(unpack(_G.Palette.orange))
+-- State:add_camera({
+--     x = State.screen_w * 0.5,
+--     y = 0,
+--     w = State.screen_w * 0.5,
+--     h = State.screen_h * 1,
+--     scale = 1,
+-- }, "cam2")
+-- State:get_camera("cam2"):set_color(0, 1, 0, 1)
 --=============================================================================
 local components
 
@@ -320,7 +329,17 @@ State:implements {
     layers = {
         {
             lock_shake = true,
-            draw = function()
+            --
+            --
+
+            ---@param camera JM.Camera.Camera
+            draw = function(self, camera)
+                if camera == State.camera then
+                    love.graphics.setColor(_G.Palette.orange)
+                else
+                    love.graphics.setColor(_G.Palette.purple)
+                end
+                love.graphics.rectangle('fill', 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
                 displayPref:draw()
             end
         },
