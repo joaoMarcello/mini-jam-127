@@ -245,6 +245,11 @@ State:implements {
             State.camera:toggle_world_bounds()
         end
 
+        if key == "return" then
+            CHANGE_GAME_STATE(require "lib.gameState.pause", true, nil, true, true, true, nil)
+            return
+        end
+
         if key == 'p' then
             RESTART(State)
             return
@@ -422,6 +427,9 @@ State:implements {
                     end
                 end
 
+                font:print("cs: " .. State.canvas_scale, 32 * 1, 32 * 5)
+                font:print("ds: " .. State.camera.desired_scale, 32 * 1, 32 * 6)
+                font:print("sub:" .. State.subpixel, 32 * 1, 32 * 7)
                 -- font:print(time_fish_speed, 32, 32 * 4)
             end
         }
