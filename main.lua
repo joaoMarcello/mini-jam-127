@@ -38,7 +38,7 @@ FONT_GUI = nil
 
 --==================================================================
 
-SCREEN_HEIGHT = Pack.Utils:round(32 * 13)            -- 384 32*15
+SCREEN_HEIGHT = Pack.Utils:round(32 * 8)             -- 384 32*15
 SCREEN_WIDTH = Pack.Utils:round(SCREEN_HEIGHT * 1.5) --576 *1.5
 local initial_state = 'game'
 

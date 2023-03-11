@@ -430,6 +430,7 @@ State:implements {
                 font:print("cs: " .. State.canvas_scale, 32 * 1, 32 * 5)
                 font:print("ds: " .. State.camera.desired_scale, 32 * 1, 32 * 6)
                 font:print("sub:" .. State.subpixel, 32 * 1, 32 * 7)
+                font:print("ox:" .. State.offset_x, 32 * 1, 32 * 8)
                 -- font:print(time_fish_speed, 32, 32 * 4)
             end
         }

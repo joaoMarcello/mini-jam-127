@@ -8,6 +8,7 @@ State:implements {
     load = function()
         -- State.prev_state.subpixel = 1
         State.prev_state.canvas_scale = 1
+        State.prev_state.offset_x = 0
     end,
 
     init = function()
@@ -27,6 +28,8 @@ State:implements {
 
         if key == "return" then
             State.prev_state.canvas_scale = State.canvas_scale
+            State.prev_state.offset_x = State.offset_x
+
             CHANGE_GAME_STATE(State.prev_state, nil, true, nil, nil, true, true)
         end
     end,
@@ -41,16 +44,10 @@ State:implements {
             love.graphics.push()
 
             local s = State.canvas_scale / State.camera.desired_scale
-            local ox = 0 ---5 ---State.offset_x / 0.46 / 4
-            local oy = 0
-            love.graphics.translate(ox, oy)
-            -- love.graphics.translate(
-            --     -State.offset_x / State.camera.desired_scale / State.canvas_scale,
-            --     State.prev_state.camera.y)
-
-
             love.graphics.scale(s, s)
+
             State.prev_state:draw(camera)
+
             love.graphics.pop()
         end
     end
