@@ -19,7 +19,7 @@ math.randomseed(os.time())
 love.graphics.setBackgroundColor(0, 0, 0, 1)
 love.graphics.setDefaultFilter("nearest", "nearest")
 love.mouse.setVisible(true)
-love.mouse.setRelativeMode(true)
+-- love.mouse.setRelativeMode(true)
 
 collectgarbage("setstepmul", 150)
 collectgarbage("setpause", 250)
@@ -38,7 +38,7 @@ FONT_GUI = nil
 
 --==================================================================
 
-SCREEN_HEIGHT = Pack.Utils:round(32 * 12)            -- 384 32*15
+SCREEN_HEIGHT = Pack.Utils:round(32 * 11)            -- 384 32*15
 SCREEN_WIDTH = Pack.Utils:round(SCREEN_HEIGHT * 1.5) --576 *1.5
 local initial_state = 'game'
 
