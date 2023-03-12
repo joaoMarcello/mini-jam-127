@@ -76,6 +76,19 @@ local tutor_atk, tutor_move = true, false
 ---@type JM.TileMap
 local tile_map
 
+---@type JM.GUI.TouchButton
+local touchButton = Pack.GUI.TouchButton:new {
+    x = 32,
+    y = 32,
+    w = 64, h = 64
+}
+touchButton:set_focus(true)
+
+touchButton:on_event("mouse_pressed", function(x, y, button, istouch)
+    touchButton:set_color2(math.random(), math.random(), math.random(), 1)
+    player:attack()
+end)
+
 local map = function()
     local px, py = -32, _G.SCREEN_HEIGHT - 32 * 2
 
@@ -263,6 +276,11 @@ State:implements {
         player = nil
     end,
 
+    mousepressed = function(x, y, button, istouch)
+        touchButton:mouse_pressed(x, y, button, istouch)
+    end,
+
+
     keypressed = function(key)
         if key == "o" then
             State.camera:toggle_grid()
@@ -324,6 +342,7 @@ State:implements {
     end,
 
     update = function(dt)
+        touchButton:update(dt)
         --
         time_game = time_game + dt
         generate_fish(dt)
@@ -473,13 +492,18 @@ State:implements {
                     end
                 end
 
+                touchButton:draw()
+
                 -- font:print("cs: " .. State.canvas_scale, 32 * 1, 32 * 5)
                 -- font:print("ds: " .. State.camera.desired_scale, 32 * 1, 32 * 6)
                 -- font:print("sub:" .. State.subpixel, 32 * 1, 32 * 7)
                 -- font:print("ox:" .. State.offset_x, 32 * 1, 32 * 8)
 
-                local x, y, w, h = State.camera:get_viewport()
-                font:print("" .. x .. "-" .. y .. "-" .. w .. "-" .. h, 32 * 2, 32 * 4)
+                -- local x, y, w, h = State.camera:get_viewport()
+                -- font:print("" .. x .. "-" .. y .. "-" .. w .. "-" .. h, 32 * 2, 32 * 4)
+
+                -- font:print("" .. State.camera.desired_scale, 32 * 3, 32 * 6)
+                -- font:print("" .. ((State.h - State.y) / State.screen_h), 32 * 3, 32 * 7)
             end
         }
     } -- END Layers
