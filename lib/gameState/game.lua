@@ -12,13 +12,13 @@ local DisplayAtk = require 'lib.displayAtk'
 local DisplayHP = require 'lib.displayHP'
 
 ---@class GameState.Game : GameState, JM.Scene
-local State = Pack.Scene:new(nil, nil, nil, 768 - 100, SCREEN_WIDTH,
+local State = Pack.Scene:new(nil, nil, nil, 768 - 150, SCREEN_WIDTH,
     SCREEN_HEIGHT)
 
 State.camera:toggle_debug()
 State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
--- State.camera.border_color = { 0, 0, 0, 0 }
+State.camera.border_color = { 0, 0, 0, 0 }
 -- State.camera.x = 32
 State:set_color(unpack(_G.Palette.orange))
 
@@ -76,18 +76,54 @@ local tutor_atk, tutor_move = true, false
 ---@type JM.TileMap
 local tile_map
 
+Pack.GUI.TouchButton:set_font(_G.FONT_GUI)
+
+local len = math.floor((State.h - State.y) / 5)
+
 ---@type JM.GUI.TouchButton
-local touchButton = Pack.GUI.TouchButton:new {
+local Button_jump = Pack.GUI.TouchButton:new {
     x = 32,
     y = 32,
-    w = 64, h = 64
+    w = len,
+    h = len,
+    use_radius = true,
+    text = "A"
 }
-touchButton:set_focus(true)
+Button_jump:set_focus(true)
+Button_jump:set_position(State.w - 30 - len, State.h - 30 - len)
+Button_jump:on_event("mouse_pressed", function()
+    player:jump()
+end)
 
-touchButton:on_event("mouse_pressed", function(x, y, button, istouch)
-    touchButton:set_color2(math.random(), math.random(), math.random(), 1)
+---@type JM.GUI.TouchButton
+local Button_Atk = Pack.GUI.TouchButton:new {
+    x = 32,
+    y = 32,
+    w = len,
+    h = len,
+    use_radius = true,
+    text = "B"
+}
+Button_Atk:set_focus(true)
+Button_Atk:set_position(Button_jump.x - len - 20,
+    Button_jump.y - len / 2 - 20)
+
+Button_Atk:on_event("mouse_pressed", function(x, y, button, istouch)
+    -- Button_Atk:set_color2(math.random(), math.random(), math.random(), 1)
     player:attack()
 end)
+
+local virtual_pad = {
+    atk = Button_Atk,
+    jump = Button_jump
+}
+
+State:set_foreground_draw(function()
+    for _, bt in pairs(virtual_pad) do
+        bt:draw()
+    end
+end)
+
 
 local map = function()
     local px, py = -32, _G.SCREEN_HEIGHT - 32 * 2
@@ -277,9 +313,19 @@ State:implements {
     end,
 
     mousepressed = function(x, y, button, istouch)
-        touchButton:mouse_pressed(x, y, button, istouch)
+        local mx, my = love.mouse.getPosition()
+
+        for _, bt in pairs(virtual_pad) do
+            bt:mouse_pressed(mx, my, button, istouch)
+        end
     end,
 
+    mousereleased = function(x, y, button, istouch, presses)
+        local mx, my = love.mouse.getPosition()
+        for _, bt in pairs(virtual_pad) do
+            bt:mouse_released(mx, my, button, istouch, presses)
+        end
+    end,
 
     keypressed = function(key)
         if key == "o" then
@@ -342,7 +388,9 @@ State:implements {
     end,
 
     update = function(dt)
-        touchButton:update(dt)
+        for _, bt in pairs(virtual_pad) do
+            bt:update(dt)
+        end
         --
         time_game = time_game + dt
         generate_fish(dt)
@@ -492,7 +540,6 @@ State:implements {
                     end
                 end
 
-                touchButton:draw()
 
                 -- font:print("cs: " .. State.canvas_scale, 32 * 1, 32 * 5)
                 -- font:print("ds: " .. State.camera.desired_scale, 32 * 1, 32 * 6)
