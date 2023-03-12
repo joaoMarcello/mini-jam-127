@@ -12,7 +12,7 @@ local DisplayAtk = require 'lib.displayAtk'
 local DisplayHP = require 'lib.displayHP'
 
 ---@class GameState.Game : GameState, JM.Scene
-local State = Pack.Scene:new(nil, 68, nil, 768 - 100, SCREEN_WIDTH,
+local State = Pack.Scene:new(nil, nil, nil, 768 - 100, SCREEN_WIDTH,
     SCREEN_HEIGHT)
 
 State.camera:toggle_debug()
@@ -20,7 +20,7 @@ State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
 -- State.camera.border_color = { 0, 0, 0, 0 }
 -- State.camera.x = 32
-State:set_color(unpack(_G.Palette.orange)) --unpack(_G.Palette.orange)
+State:set_color(unpack(_G.Palette.orange))
 
 -- State.camera:set_viewport(
 --     State.screen_w * 0,
@@ -36,6 +36,7 @@ State:set_color(unpack(_G.Palette.orange)) --unpack(_G.Palette.orange)
 --     h = State.screen_h * 0.5,
 --     scale = 0.5,
 -- }, "cam2")
+-- State:get_camera("cam2").x = 64
 
 -- State:add_camera({
 --     x = State.screen_w * 0.5,
@@ -297,8 +298,24 @@ State:implements {
         end
 
         if key == 'u' then
+            State.x = 0
+            State.y = 0
+            State.w = 1366 * 0.8
+            State.h = 768 - 168
+        end
+
+        if key == 'j' then
+            State.x = 0
+            State.y = 0
             State.w = 1366 / 2
             State.h = 768 / 2
+        end
+
+        if key == 'k' then
+            State.x = 50
+            State.y = 50
+            State.w = 1366 / 2
+            State.h = 768 - 20
         end
     end,
 

@@ -62,6 +62,27 @@ State:implements {
             State.camera:toggle_debug()
             State.camera:toggle_world_bounds()
         end
+
+        if key == 'u' then
+            State.x = 0
+            State.y = 0
+            State.w = 1366 * 0.8
+            State.h = 768 - 168
+        end
+
+        if key == 'j' then
+            State.x = 0
+            State.y = 0
+            State.w = 1366 / 2
+            State.h = 768 / 2
+        end
+
+        if key == 'k' then
+            State.x = 50
+            State.y = 50
+            State.w = 1366 / 2
+            State.h = 768 - 20
+        end
     end,
 
     update = function(dt)
