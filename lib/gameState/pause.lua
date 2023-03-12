@@ -6,7 +6,15 @@ State.camera:toggle_debug()
 State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
+
+State.camera:set_viewport(
+    State.screen_w * 0,
+    State.screen_h * 0,
+    State.screen_w * 1,
+    State.screen_h * 1
+)
 --=============================================================================
+local save_canvas_scale, save_offset_x
 
 State:implements {
     load = function()

@@ -12,7 +12,7 @@ local DisplayAtk = require 'lib.displayAtk'
 local DisplayHP = require 'lib.displayHP'
 
 ---@class GameState.Game : GameState, JM.Scene
-local State = Pack.Scene:new(0, 0, 1366, 768, SCREEN_WIDTH, SCREEN_HEIGHT)
+local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
 
 State.camera:toggle_debug()
 State.camera:toggle_grid()
@@ -21,13 +21,27 @@ State.camera:toggle_world_bounds()
 -- State.camera.x = 32
 State:set_color(unpack(_G.Palette.orange)) --unpack(_G.Palette.orange)
 
--- State:add_camera({
---     x = State.screen_w * 0.5,
---     y = 0,
---     w = State.screen_w * 0.5,
---     h = State.screen_h * 1,
---     scale = 1,
--- }, "cam2")
+-- State.camera:set_viewport(
+--     State.screen_w * 0,
+--     State.screen_h * 0,
+--     State.screen_w * 1,
+--     State.screen_h * 1
+-- )
+
+State:add_camera({
+    x = State.screen_w * 0.5,
+    y = 0,
+    w = State.screen_w * 0.5,
+    h = State.screen_h * 1,
+    scale = 1,
+}, "cam2")
+
+-- State:get_camera("cam2"):set_viewport(
+--     State.screen_w * 0.5,
+--     State.screen_h * 0,
+--     State.screen_w * 0.5,
+--     State.screen_h * 1
+-- )
 -- State:get_camera("cam2"):set_color(0, 1, 0, 1)
 --=============================================================================
 local components
@@ -446,10 +460,13 @@ State:implements {
                     end
                 end
 
-                -- font:print("cs: " .. State.canvas_scale, 32 * 1, 32 * 5)
-                -- font:print("ds: " .. State.camera.desired_scale, 32 * 1, 32 * 6)
-                -- font:print("sub:" .. State.subpixel, 32 * 1, 32 * 7)
-                -- font:print("ox:" .. State.offset_x, 32 * 1, 32 * 8)
+                font:print("cs: " .. State.canvas_scale, 32 * 1, 32 * 5)
+                font:print("ds: " .. State.camera.desired_scale, 32 * 1, 32 * 6)
+                font:print("sub:" .. State.subpixel, 32 * 1, 32 * 7)
+                font:print("ox:" .. State.offset_x, 32 * 1, 32 * 8)
+
+                local x, y, w, h = State.camera:get_viewport()
+                font:print("" .. x .. "-" .. y .. "-" .. w .. "-" .. h, 32 * 2, 32 * 4)
                 -- font:print(time_fish_speed, 32, 32 * 4)
             end
         }
