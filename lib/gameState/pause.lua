@@ -54,7 +54,7 @@ State:implements {
         if State.prev_state then
             love.graphics.push()
 
-            local s = State.canvas_scale / State.camera.desired_scale
+            local s = State.canvas_scale / (State.camera.desired_scale)
             love.graphics.scale(s, s)
 
             State.prev_state:draw(camera)

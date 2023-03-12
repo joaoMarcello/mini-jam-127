@@ -12,7 +12,7 @@ local DisplayAtk = require 'lib.displayAtk'
 local DisplayHP = require 'lib.displayHP'
 
 ---@class GameState.Game : GameState, JM.Scene
-local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH,
+local State = Pack.Scene:new(nil, 68, nil, 768 - 100, SCREEN_WIDTH,
     SCREEN_HEIGHT)
 
 State.camera:toggle_debug()
@@ -359,7 +359,8 @@ State:implements {
                 else
                     love.graphics.setColor(_G.Palette.purple)
                 end
-                love.graphics.rectangle('fill', 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+                -- love.graphics.rectangle('fill', 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+
                 displayPref:draw()
             end
         },
@@ -371,21 +372,6 @@ State:implements {
             --
             ---@param camera JM.Camera.Camera
             draw = function(self, camera)
-                --
-                -- for i = 1, world.bodies_number do
-                --     ---@type JM.Physics.Body|JM.Physics.Slope
-                --     local obj = world.bodies[i]
-
-                --     if obj and camera:rect_is_on_view(obj:rect()) then
-                --         -- local r = obj.type == 2 and obj.draw and
-                --         --     obj:draw()
-                --         if obj.type == 2 then
-                --             love.graphics.setColor(Palette.red)
-                --             love.graphics.rectangle("fill", obj:rect())
-                --         end
-                --     end
-                -- end
-
                 tile_map:draw(camera)
 
                 tableSort(components, sort_draw)
@@ -475,8 +461,8 @@ State:implements {
                 -- font:print("sub:" .. State.subpixel, 32 * 1, 32 * 7)
                 -- font:print("ox:" .. State.offset_x, 32 * 1, 32 * 8)
 
-                -- local x, y, w, h = State.camera:get_viewport()
-                -- font:print("" .. x .. "-" .. y .. "-" .. w .. "-" .. h, 32 * 2, 32 * 4)
+                local x, y, w, h = State.camera:get_viewport()
+                font:print("" .. x .. "-" .. y .. "-" .. w .. "-" .. h, 32 * 2, 32 * 4)
             end
         }
     } -- END Layers
