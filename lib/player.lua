@@ -58,12 +58,17 @@ end
 ---@param self Player
 local function move_default(self, dt)
     local body = self.body
+    local pad = self.gamestate:game_get_virtual_pad()
 
-    if pressing(self, 'left') and body.speed_x <= 0.0 then
+    if (pressing(self, 'left') or pad.stick:is_pressing("left"))
+        and body.speed_x <= 0.0
+    then
         body:apply_force(-self.acc)
         self.direction = -1
         --
-    elseif pressing(self, "right") and body.speed_x >= 0.0 then
+    elseif (pressing(self, "right") or pad.stick:is_pressing("right"))
+        and body.speed_x >= 0.0
+    then
         body:apply_force(self.acc)
         self.direction = 1
         --
@@ -381,7 +386,7 @@ function Player:select_anima()
         next = self.animas[States.atk]
         --
     else
-        if self.body.speed_y ~= 0 then
+        if math.abs(self.body.speed_y) >= 1 then
             next = self.animas[States.jump]
         elseif self.body.speed_x == 0 then
             next = self.animas[States.default]

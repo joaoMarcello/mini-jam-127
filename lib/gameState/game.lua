@@ -12,7 +12,7 @@ local DisplayAtk = require 'lib.displayAtk'
 local DisplayHP = require 'lib.displayHP'
 
 ---@class GameState.Game : GameState, JM.Scene
-local State = Pack.Scene:new(nil, nil, nil, 768 - 150, SCREEN_WIDTH,
+local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH,
     SCREEN_HEIGHT, nil, {
         subpixel = 2,
         canvas_filter = 'linear'
@@ -116,13 +116,24 @@ Button_Atk:on_event("mouse_pressed", function(x, y, button, istouch)
     player:attack()
 end)
 
-local Stick = Pack.GUI.VirtualStick:new { on_focus = true }
+---@type JM.GUI.VirtualStick
+local Stick = Pack.GUI.VirtualStick:new {
+    on_focus = true,
+    w = (State.h - State.y) / 4,
+    is_mobile = true,
+}
+
+Stick:set_position(Stick.max_dist, State.h - Stick.h - 50, true)
 
 local virtual_pad = {
     atk = Button_Atk,
     jump = Button_jump,
     stick = Stick
 }
+
+function State:game_get_virtual_pad()
+    return virtual_pad
+end
 
 State:set_foreground_draw(function()
     for _, bt in pairs(virtual_pad) do

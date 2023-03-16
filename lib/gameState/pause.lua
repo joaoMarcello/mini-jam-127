@@ -18,7 +18,7 @@ local save_canvas_scale, save_offset_x
 
 State:implements {
     load = function()
-        State.prev_state.canvas_scale = 1
+        State.prev_state.canvas_scale = 1 --1 / State.prev_state.canvas_scale
         State.prev_state.offset_x = 0
     end,
 
@@ -54,8 +54,10 @@ State:implements {
         if State.prev_state then
             love.graphics.push()
 
-            local s = State.canvas_scale / (State.camera.desired_scale)
-            love.graphics.scale(s, s)
+            local ds = State.camera.device_height / State.camera.desired_canvas_h
+
+            local s = State.canvas_scale -- / ds
+            -- love.graphics.scale(s, s)
 
             State.prev_state:draw(camera)
 
