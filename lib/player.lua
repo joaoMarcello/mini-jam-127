@@ -375,6 +375,30 @@ function Player:key_released(key)
     end
 end
 
+function Player:touch_pressed()
+    local pad = self.gamestate:game_get_virtual_pad()
+
+    if pad.jump:is_pressed() then
+        self:key_pressed(self.key_jump[1])
+    end
+
+    if pad.atk:is_pressed() then
+        self:key_pressed(self.key_attack[1])
+    end
+end
+
+function Player:touch_released()
+    local pad = self.gamestate:game_get_virtual_pad()
+
+    if pad.jump:is_released() then
+        self:key_released(self.key_jump[1])
+    end
+end
+
+function Player:mouse_pressed()
+    self:touch_pressed()
+end
+
 function Player:select_anima()
     local next
     local Anima = _G.JM_Anima
@@ -386,7 +410,7 @@ function Player:select_anima()
         next = self.animas[States.atk]
         --
     else
-        if math.abs(self.body.speed_y) >= 1 then
+        if self.body.speed_y ~= 0 then
             next = self.animas[States.jump]
         elseif self.body.speed_x == 0 then
             next = self.animas[States.default]

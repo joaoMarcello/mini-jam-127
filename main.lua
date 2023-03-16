@@ -151,6 +151,14 @@ function love.mousemoved(x, y, dx, dy, istouch)
     scene:mousemoved(x, y, dx, dy, istouch)
 end
 
+function love.touchpressed(id, x, y, dx, dy, pressure)
+    scene:touchpressed(id, x, y, dx, dy, pressure)
+end
+
+function love.touchreleased(id, x, y, dx, dy, pressure)
+    scene:touchreleased(id, x, y, dx, dy, pressure)
+end
+
 local km = nil
 function love.update(dt)
     km = collectgarbage("count") / 1024.0

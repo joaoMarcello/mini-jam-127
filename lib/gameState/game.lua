@@ -94,9 +94,6 @@ local Button_jump = Pack.GUI.TouchButton:new {
 }
 Button_jump:set_focus(true)
 Button_jump:set_position(State.w - 30 - len, State.h - 30 - len)
-Button_jump:on_event("mouse_pressed", function()
-    player:jump()
-end)
 
 ---@type JM.GUI.TouchButton
 local Button_Atk = Pack.GUI.TouchButton:new {
@@ -105,22 +102,20 @@ local Button_Atk = Pack.GUI.TouchButton:new {
     w = len,
     h = len,
     use_radius = true,
-    text = "B"
+    text = "B",
 }
 Button_Atk:set_focus(true)
 Button_Atk:set_position(Button_jump.x - len - 20,
     Button_jump.y - len / 2 - 20)
-
-Button_Atk:on_event("mouse_pressed", function(x, y, button, istouch)
-    -- Button_Atk:set_color2(math.random(), math.random(), math.random(), 1)
-    player:attack()
-end)
 
 ---@type JM.GUI.VirtualStick
 local Stick = Pack.GUI.VirtualStick:new {
     on_focus = true,
     w = (State.h - State.y) / 4,
     is_mobile = true,
+    bound_top = (State.h - State.y) * 0.25,
+    bound_width = (State.w - State.x) / 4,
+    bound_height = (State.h - State.y) * 0.75,
 }
 
 Stick:set_position(Stick.max_dist, State.h - Stick.h - 50, true)
@@ -335,6 +330,9 @@ State:implements {
         for _, bt in pairs(virtual_pad) do
             bt:mouse_pressed(mx, my, button, istouch)
         end
+
+        player:mouse_pressed()
+        if Button_Atk:is_pressed() then tutor_atk = false end
     end,
 
     mousereleased = function(x, y, button, istouch, presses)
@@ -342,6 +340,16 @@ State:implements {
         for _, bt in pairs(virtual_pad) do
             bt:mouse_released(mx, my, button, istouch, presses)
         end
+
+        player:touch_released()
+    end,
+
+    touchpressed = function(id, x, y, dx, dy, pressure)
+        player:touch_pressed()
+    end,
+
+    touchreleased = function(id, x, y, dx, dy, pressure)
+        player:touch_released()
     end,
 
     keypressed = function(key)
