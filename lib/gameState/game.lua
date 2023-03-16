@@ -90,7 +90,8 @@ local Button_jump = Pack.GUI.TouchButton:new {
     w = len,
     h = len,
     use_radius = true,
-    text = "A"
+    text = "A",
+    opacity = 0.5,
 }
 Button_jump:set_focus(true)
 Button_jump:set_position(State.w - 30 - len, State.h - 30 - len)
@@ -103,6 +104,7 @@ local Button_Atk = Pack.GUI.TouchButton:new {
     h = len,
     use_radius = true,
     text = "B",
+    opacity = 0.5,
 }
 Button_Atk:set_focus(true)
 Button_Atk:set_position(Button_jump.x - len - 20,
@@ -116,6 +118,7 @@ local Stick = Pack.GUI.VirtualStick:new {
     bound_top = (State.h - State.y) * 0.25,
     bound_width = (State.w - State.x) / 4,
     bound_height = (State.h - State.y) * 0.75,
+    opacity = 0.5,
 }
 
 Stick:set_position(Stick.max_dist, State.h - Stick.h - 50, true)
@@ -325,6 +328,8 @@ State:implements {
     end,
 
     mousepressed = function(x, y, button, istouch)
+        if DEVICE == "Android" then return end
+
         local mx, my = love.mouse.getPosition()
 
         for _, bt in pairs(virtual_pad) do
@@ -336,6 +341,8 @@ State:implements {
     end,
 
     mousereleased = function(x, y, button, istouch, presses)
+        if DEVICE == "Android" then return end
+
         local mx, my = love.mouse.getPosition()
         for _, bt in pairs(virtual_pad) do
             bt:mouse_released(mx, my, button, istouch, presses)
@@ -345,10 +352,26 @@ State:implements {
     end,
 
     touchpressed = function(id, x, y, dx, dy, pressure)
+        for _, bt in pairs(virtual_pad) do
+            bt:touch_pressed(id, x, y, dx, dy, pressure)
+        end
+
+        if player.time_death and player.time_death >= 4 then
+            if Button_jump:is_pressed() then
+                RESTART(State)
+                return
+            end
+        end
+
         player:touch_pressed()
+        if Button_Atk:is_pressed() then tutor_atk = false end
     end,
 
     touchreleased = function(id, x, y, dx, dy, pressure)
+        for _, bt in pairs(virtual_pad) do
+            bt:touch_released(id, x, y, dx, dy, pressure)
+        end
+
         player:touch_released()
     end,
 
@@ -488,9 +511,9 @@ State:implements {
                     local r = components[i].draw and components[i]:draw()
                 end
 
-                local mx, my = State:get_mouse_position()
-                love.graphics.setColor(0, 0, 1)
-                love.graphics.circle("fill", mx, my, 5)
+                -- local mx, my = State:get_mouse_position()
+                -- love.graphics.setColor(0, 0, 1)
+                -- love.graphics.circle("fill", mx, my, 5)
             end
         },
         --
@@ -576,6 +599,9 @@ State:implements {
 
                 -- font:print("" .. State.camera.desired_scale, 32 * 3, 32 * 6)
                 -- font:print("" .. ((State.h - State.y) / State.screen_h), 32 * 3, 32 * 7)
+
+                local s = string.format("%.10f", player.body.speed_y)
+                font:print(tostring(player.body.speed_y), 300, 300)
             end
         }
     } -- END Layers
