@@ -600,8 +600,8 @@ State:implements {
                 -- font:print("" .. State.camera.desired_scale, 32 * 3, 32 * 6)
                 -- font:print("" .. ((State.h - State.y) / State.screen_h), 32 * 3, 32 * 7)
 
-                local s = string.format("%.10f", player.body.speed_y)
-                font:print(tostring(player.body.speed_y), 300, 300)
+                -- local s = string.format("%.10f", player.body.speed_y)
+                -- font:print(tostring(player.body.speed_y), 300, 300)
             end
         }
     } -- END Layers
