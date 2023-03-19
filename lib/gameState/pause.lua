@@ -1,7 +1,11 @@
 local Pack = _G.JM_Love2D_Package
 
 ---@class GameState.Pause : GameState
-local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT)
+local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT, nil, {
+    subpixel = 2,
+    canvas_filter = 'linear',
+})
+
 State.camera:toggle_debug()
 State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
@@ -56,8 +60,8 @@ State:implements {
 
             local ds = State.camera.device_height / State.camera.desired_canvas_h
 
-            local s = State.canvas_scale -- / ds
-            -- love.graphics.scale(s, s)
+            local s = State.canvas_scale / ds
+            love.graphics.scale(s, s)
 
             State.prev_state:draw(camera)
 
