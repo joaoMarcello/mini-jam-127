@@ -10,8 +10,8 @@ local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
     },
     {
         cam_scale = 1,
-        subpixel = 4,
-        canvas_filter = 'linear'
+        subpixel = 2,
+        canvas_filter = 'linear',
     }
 )
 
@@ -94,9 +94,9 @@ State:implements {
         end
 
         if key == 'f' then
-            State:add_transition("tile", "out", { duration = 1 })
+            State:add_transition("tile", "out", { duration = 1, type = "left-right" })
         elseif key == 'g' then
-            State:add_transition("tile", "in", { duration = 0.2 })
+            State:add_transition("tile", "in", { duration = 0.2, type = "right-left", segment = 6 })
         end
     end,
 
