@@ -7,6 +7,11 @@ local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
         left = -32 * 10,
         right = 32 * 200,
         bottom = 32 * 200
+    },
+    {
+        cam_scale = 1,
+        subpixel = 4,
+        canvas_filter = 'linear'
     }
 )
 
@@ -39,7 +44,8 @@ State:implements {
                 Entry(64, 0, 1)
                 Entry(96, 0, 2)
 
-                Entry(0, 32, "anima")
+                Entry(0, 32, 1000)
+                Entry(32, 32, 1001)
             end,
             "/data/image/tile-set-bob.png",
             32
@@ -51,7 +57,8 @@ State:implements {
             32
         )
 
-        map2.tile_set:add_animated_tile("anima", { 1, 3, 4 }, 0.3)
+        map2.tile_set:add_animated_tile(1000, { 1, 3, 4 }, 0.3)
+        map2.tile_set:add_animated_tile(1001, { 1, 3, 4 }, 1)
     end,
 
     init = function()
@@ -85,6 +92,12 @@ State:implements {
             State.w = 1366 / 2
             State.h = 768 - 20
         end
+
+        if key == 'f' then
+            State:add_transition("tile", "out", { duration = 1 })
+        elseif key == 'g' then
+            State:add_transition("tile", "in", { duration = 0.2 })
+        end
     end,
 
     update = function(dt)
@@ -98,9 +111,9 @@ State:implements {
             end
 
             if love.keyboard.isDown("down") then
-                camera:move(nil, speed)
+                camera:move(nil, 3)
             elseif love.keyboard.isDown("up") then
-                camera:move(nil, -speed)
+                camera:move(nil, -3)
             end
         end
 
