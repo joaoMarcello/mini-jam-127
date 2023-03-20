@@ -39,7 +39,7 @@ State:implements {
                 Entry(64, 0, 1)
                 Entry(96, 0, 2)
 
-                Entry(0, 32, 3)
+                Entry(0, 32, "anima")
             end,
             "/data/image/tile-set-bob.png",
             32
@@ -50,6 +50,8 @@ State:implements {
             "/data/image/tileset_01.png",
             32
         )
+
+        map2.tile_set:add_animated_tile("anima", { 1, 3, 4 }, 0.3)
     end,
 
     init = function()
@@ -101,6 +103,9 @@ State:implements {
                 camera:move(nil, -speed)
             end
         end
+
+        tile_map:update(dt)
+        map2:update(dt)
     end,
 
     draw = function(camera)
@@ -112,7 +117,7 @@ State:implements {
         ---@type JM.TileMap.Cell
         local cell = tile_map.cells_by_pos[tile_map.min_y] and tile_map.cells_by_pos[tile_map.min_y][tile_map.min_x]
 
-        if cell then
+        if cell or true then
             love.graphics.rectangle("fill", 32 * 20, 32 * 10, 32, 32)
         end
 
