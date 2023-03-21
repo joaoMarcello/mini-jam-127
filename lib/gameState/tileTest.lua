@@ -18,6 +18,14 @@ local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH, SCREEN_HEIGHT,
 State.camera:toggle_debug()
 State.camera:toggle_grid()
 State.camera:toggle_world_bounds()
+
+State:add_camera({
+    x = State.screen_w * 0.5,
+    y = 20,
+    w = State.screen_w * 0.4,
+    h = State.screen_h * 0.9,
+    scale = 0.7,
+}, "cam2")
 --=============================================================================
 ---@type JM.TileMap
 local tile_map
