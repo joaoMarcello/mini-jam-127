@@ -102,9 +102,9 @@ State:implements {
         end
 
         if key == 'f' then
-            State:add_transition("cartoon", "out", { duration = 1, type = "left-right" })
+            State:add_transition("masker", "out", { duration = 1, type = "left-right" })
         elseif key == 'g' then
-            State:add_transition("cartoon", "in", { duration = 1, type = "right-left", segment = 9 })
+            State:add_transition("masker", "in", { duration = 1, type = "right-left", segment = 9 })
         end
     end,
 
