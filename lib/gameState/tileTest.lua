@@ -141,6 +141,10 @@ State:implements {
         elseif key == 'g' then
             State:add_transition("door", "in", { duration = nil, type = "down-up", axis = "y", segment = 9 })
         end
+
+        if key == "l" then
+            collectgarbage()
+        end
     end,
 
     update = function(dt)
