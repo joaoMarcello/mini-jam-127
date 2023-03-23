@@ -25,6 +25,7 @@ State:add_camera({
     w = State.screen_w * 0.4,
     h = State.screen_h * 0.9,
     scale = 0.7,
+    type = "metroid"
 }, "cam2")
 --=============================================================================
 ---@type JM.TileMap
@@ -35,6 +36,40 @@ local map2
 
 ---@type JM.TileMap
 local map3
+
+local player = {
+    x = 0,
+    y = 0,
+    w = 64,
+    h = 64,
+    get_cx = function(self)
+        return JM_Utils:round(self.x + self.w / 2)
+    end,
+    get_cy = function(self)
+        return JM_Utils:round(self.y + self.h / 2)
+    end,
+    update = function(self, dt)
+        local sp = 128
+        if love.keyboard.isDown("down") then
+            self.y = self.y + sp * dt
+        elseif love.keyboard.isDown("up") then
+            self.y = self.y - sp * dt
+        end
+
+        if love.keyboard.isDown("right") then
+            self.x = self.x + sp * dt
+        elseif love.keyboard.isDown("left") then
+            self.x = self.x - sp * dt
+        end
+
+        self.x = JM_Utils:round(self.x)
+        self.y = JM_Utils:round(self.y)
+    end,
+    draw = function(self)
+        love.graphics.setColor(0, 0, 1)
+        love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+    end
+}
 --=============================================================================
 
 State:implements {
@@ -109,21 +144,27 @@ State:implements {
     end,
 
     update = function(dt)
-        for _, camera in ipairs(State.cameras_list) do
-            local speed = 32 * 7 * dt / camera.scale
+        -- for _, camera in ipairs(State.cameras_list) do
+        --     local speed = 32 * 7 * dt / camera.scale
 
-            if love.keyboard.isDown("left") then
-                camera:move(-3)
-            elseif love.keyboard.isDown("right") then
-                camera:move(3)
-            end
+        --     if love.keyboard.isDown("left") then
+        --         camera:move(-3)
+        --     elseif love.keyboard.isDown("right") then
+        --         camera:move(3)
+        --     end
 
-            if love.keyboard.isDown("down") then
-                camera:move(nil, 3)
-            elseif love.keyboard.isDown("up") then
-                camera:move(nil, -3)
-            end
-        end
+        --     if love.keyboard.isDown("down") then
+        --         camera:move(nil, 3)
+        --     elseif love.keyboard.isDown("up") then
+        --         camera:move(nil, -3)
+        --     end
+        -- end
+
+        player:update(dt)
+
+        State.camera:follow(player:get_cx(), player:get_cy())
+        local cam = State:get_camera("cam2")
+        local r = cam and cam:follow(player:get_cx(), player:get_cy())
 
         tile_map:update(dt)
         map2:update(dt)
@@ -147,6 +188,8 @@ State:implements {
         local font = FONT_GUI
         font:print(tostring(tile_map.tile_set == map3.tile_set), 32 * 3, 32 * 8)
         font:print(tostring(_G.Entry), 32 * 3, 32 * 3)
+
+        player:draw()
     end
 }
 
