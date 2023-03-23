@@ -102,9 +102,9 @@ State:implements {
         end
 
         if key == 'f' then
-            State:add_transition("stripe", "out", { duration = nil, type = "left-right" })
+            State:add_transition("pass", "out", { duration = nil, type = "left-right" })
         elseif key == 'g' then
-            State:add_transition("tile", "in", { duration = nil, type = "down-up", axis = "y", segment = 9 })
+            State:add_transition("door", "in", { duration = nil, type = "down-up", axis = "y", segment = 9 })
         end
     end,
 

@@ -38,7 +38,7 @@ FONT_GUI = nil
 
 --==================================================================
 
-SCREEN_HEIGHT = Pack.Utils:round(32 * 11)            -- 384 32*15
+SCREEN_HEIGHT = Pack.Utils:round(32 * 12)            -- 384 32*15
 SCREEN_WIDTH = Pack.Utils:round(SCREEN_HEIGHT * 1.5) --576 *1.5
 
 DEVICE = "Android"
@@ -59,7 +59,8 @@ function CHANGE_GAME_STATE(new_state, skip_finish, skip_load, save_prev, skip_co
     r = (not skip_init) and new_state:init()
     r = (not skip_collect) and collectgarbage()
     scene = new_state
-    r = not skip_fadein and scene:fadein(nil, nil, nil)
+    -- r = not skip_fadein and scene:fadein(nil, nil, nil)
+    r = not skip_fadein and scene:add_transition("fade", "in", { delay = nil, duration = 0.3, pause_scene = nil })
 end
 
 function RESTART(state)
@@ -163,10 +164,17 @@ function love.touchreleased(id, x, y, dx, dy, pressure)
 end
 
 local km = nil
+local time = 0
 function love.update(dt)
     km = collectgarbage("count") / 1024.0
     Pack:update(dt)
     scene:update(dt)
+
+    -- time = time + dt
+    -- if time >= 3 then
+    --     time = 0
+    --     local r = not collectgarbage("isrunning") and collectgarbage("step")
+    -- end
 end
 
 function love.draw()
