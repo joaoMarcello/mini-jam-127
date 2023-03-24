@@ -25,7 +25,7 @@ State:add_camera({
     w = State.screen_w * 0.4,
     h = State.screen_h * 0.9,
     scale = 0.7,
-    type = "metroid"
+    -- type = "metroid"
 }, "cam2")
 --=============================================================================
 ---@type JM.TileMap
@@ -137,7 +137,7 @@ State:implements {
         end
 
         if key == 'f' then
-            State:add_transition("pass", "out", { duration = nil, type = "left-right" })
+            State:add_transition("curtain", "out", { duration = nil, type = "left-right" })
         elseif key == 'g' then
             State:add_transition("door", "in", { duration = nil, type = "down-up", axis = "y", segment = 9 })
         end
