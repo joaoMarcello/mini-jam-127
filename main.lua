@@ -74,7 +74,7 @@ end
 ---@param state GameState
 function UNPAUSE(state)
     if not state then return end
-    state.prev_state.camera.desired_scale = state.camera.desired_scale
+    -- state.prev_state.camera.desired_scale = state.camera.desired_scale
     CHANGE_GAME_STATE(state.prev_state, true, true, false, false, true, true)
 end
 
