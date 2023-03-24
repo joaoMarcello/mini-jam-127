@@ -139,7 +139,7 @@ State:implements {
         if key == 'f' then
             State:add_transition("door", "out", { duration = nil, type = "left-right" })
         elseif key == 'g' then
-            State:add_transition("door", "in", { duration = nil, type = "down-up", axis = "y", segment = 9 })
+            State:add_transition("cartoon", "in", { duration = nil, type = "left-right", axis = "y", segment = 9 })
         end
 
         if key == "l" then
