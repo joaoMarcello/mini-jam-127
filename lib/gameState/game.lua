@@ -18,9 +18,9 @@ local State = Pack.Scene:new(nil, nil, nil, nil, SCREEN_WIDTH,
         canvas_filter = 'linear'
     })
 
-State.camera:toggle_debug()
-State.camera:toggle_grid()
-State.camera:toggle_world_bounds()
+-- State.camera:toggle_debug()
+-- State.camera:toggle_grid()
+-- State.camera:toggle_world_bounds()
 State.camera.border_color = { 0, 0, 0, 0 }
 -- State.camera.x = 32
 State:set_color(unpack(_G.Palette.orange))
